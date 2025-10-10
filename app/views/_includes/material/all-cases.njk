@@ -1,6 +1,6 @@
 {% if cases and cases.length %}
   {% for _case in cases %}
-    {# People-friendly variable names #}
+    {#  Set defendant variable names #}
     {% set defendants = _case.defendants | default([]) %}
     {% set primaryDefendant = defendants[0] | default(null) %}
     {% set primaryFirstName = (primaryDefendant and primaryDefendant.firstName) | default('') %}
