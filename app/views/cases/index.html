@@ -1,15 +1,15 @@
 {% extends "layouts/main.html" %}
 
 {% set navId = 'cases' %}
-{% set pageName = "Cases (:total)" | replace(':total', totalCases) %}
-
-
-{% set defendantName = case.defendants[0].firstName + case.defendants[0].lastName %}
-
+{% set pageName = "Cases (" + (totalCases | default(0)) + ")" %}
 
 {% block content %}
-  <h1 class="govuk-heading-l">{{defendantName}}</h1>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-three-quarters">
+
+      {% include "_includes/material/single-case.njk" %}
+      {% include "_includes/material/secondary-navigation.njk" %}
+
+    </div>
+  </div>
 {% endblock %}
-
-
-{{ cases | log }}

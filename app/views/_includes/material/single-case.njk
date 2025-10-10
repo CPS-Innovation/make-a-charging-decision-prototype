@@ -1,0 +1,23 @@
+{# Pick the first case safely #}
+{% set singleCase = (cases | default([]))[0] | default(null) %}
+
+{% if singleCase %}
+  {% set defendants = singleCase.defendants | default([]) %}
+  {% set primaryDefendant = defendants[0] | default(null) %}
+  {% set primaryFirstName = (primaryDefendant and primaryDefendant.firstName) | default('') %}
+  {% set primaryLastName  = (primaryDefendant and primaryDefendant.lastName)  | default('') %}
+  {% set primaryFullName  = (primaryFirstName ~ ' ' ~ primaryLastName) | trim %}
+  {% set additionalDefendantCount = (defendants | length) - 1 %}
+  {% set hasAdditionalDefendants = additionalDefendantCount > 0 %}
+
+  <h2 class="govuk-heading-m">
+    {{ primaryFullName or '—' }}
+    {% if hasAdditionalDefendants %} and {{ additionalDefendantCount }} more{% endif %}
+  </h2>
+
+  <p class="govuk-body govuk-!-margin-bottom-6">
+    Ref: {{ singleCase.reference }}
+  </p>
+{% else %}
+  <p class="govuk-body">No cases found.</p>
+{% endif %}
