@@ -27,56 +27,10 @@
 </div>
 {% endset -%}
 
-{% set pastWeekHtml %}
-<h2 class="govuk-heading-l">Past week</h2>
-{{ govukTable({
-  head: [
-    {
-      text: "Case manager"
-    },
-    {
-      text: "Cases opened"
-    },
-    {
-      text: "Cases closed"
-    }
-  ],
-  rows: [
-    [
-      {
-        text: "David Francis"
-      },
-      {
-        text: "24"
-      },
-      {
-        text: "18"
-      }
-    ],
-    [
-      {
-        text: "Paul Farmer"
-      },
-      {
-        text: "16"
-      },
-      {
-        text: "20"
-      }
-    ],
-    [
-      {
-        text: "Rita Patel"
-      },
-      {
-        text: "24"
-      },
-      {
-        text: "27"
-      }
-    ]
-  ]
-}) }}
+{% set defendantsHtml %}
+<h2 class="govuk-heading-l">Defendants</h2>
+
+
 {% endset -%}
 
 {% set pastMonthHtml %}
