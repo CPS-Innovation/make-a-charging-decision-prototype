@@ -10,14 +10,11 @@
   {% set additionalDefendantCount = (defendants | length) - 1 %}
   {% set hasAdditionalDefendants = additionalDefendantCount > 0 %}
 
-  <h2 class="govuk-heading-m">
-    {{ primaryFullName or '—' }}
+  <span class="govuk-caption-l">{{ singleCase.reference }}</span>
+  <h1 class="govuk-heading-l">{{ primaryFullName or '—' }}
     {% if hasAdditionalDefendants %} and {{ additionalDefendantCount }} more{% endif %}
-  </h2>
+  </h1>
 
-  <p class="govuk-body govuk-!-margin-bottom-6">
-    Ref: {{ singleCase.reference }}
-  </p>
 {% else %}
   <p class="govuk-body">No cases found.</p>
 {% endif %}
