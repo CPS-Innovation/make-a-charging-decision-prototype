@@ -1,0 +1,47 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  GOV.UK page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block content %}
+<style>
+  /* The shared layout (includes/wide.html) sets the page width to 1400px,
+     but the real CPS site this page is modelled on is 1200px wide. Since
+     that shared file affects every other page using this layout, the
+     narrower width is overridden here instead, scoped to this page only. */
+  .govuk-main-wrapper {
+    max-width: 1200px;
+    min-height: 100vh;
+  }
+
+  .govuk-width-container {
+    max-width: 1200px;
+  }
+</style>
+
+<h1 class="govuk-heading-l">Prototype index</h1>
+
+
+
+
+<ol class="govuk-list govuk-list--number">
+  <li hidden><p class="govuk-body">
+  <a href="experement/case-review-landing.html" class="govuk-link govuk-link--no-visited-state"> Case review</a>
+</p></li>
+  <li hidden><p class="govuk-body">
+  <a href="experement/work-managment-overview.html" class="govuk-link govuk-link--no-visited-state"> Action plan</a>
+</p></li>
+ <li hidden><p class="govuk-body">
+  <a href="experement/nav.html" class="govuk-link govuk-link--no-visited-state"> Nav</a>
+</p></li>
+<li><p class="govuk-body">
+  <a href="cap-v1/wm-1.html" class="govuk-link govuk-link--no-visited-state"> CAP_V1</a>
+</p></li>
+
+<li><p class="govuk-body">
+  <a href="cap-v2/wm-1.html" class="govuk-link govuk-link--no-visited-state"> CAP_V2</a>
+</p></li>
+</ol>
+
+{% endblock %}

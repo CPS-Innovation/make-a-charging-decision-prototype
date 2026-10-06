@@ -1,0 +1,209 @@
+{% extends "layouts/main.html" %}
+
+{% block header %}{% endblock %}
+{% block footer %}{% endblock %}
+
+{% block pageTitle %}
+  GOV.UK page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% set caseName = "McLOVE, Eoin and 4 Others" %}
+{% set caseReference = "45AA209820/1" %}
+
+{% block content %}
+  <style>
+    /* The shared layout sets the page width to 1400px, but the real CPS site
+       this page is modelled on is 1200px wide. Scoped to this page only. */
+    .govuk-main-wrapper {
+        max-width: 1200px;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+
+    .govuk-width-container {
+        max-width: 1200px;
+    }
+
+    .app-autosave-status {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-bottom: 1px solid #b1b4b6;
+      padding-bottom: 15px;
+      margin-bottom: 40px;
+    }
+
+    /* Row that sits the action point title link and its status tag side by
+       side, with a little space above each point's summary list. */
+    .app-action-point-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        margin-bottom: 15px;
+    }
+  </style>
+
+  <div class="app-autosave-status">
+    <div>
+      <p class="govuk-heading-s govuk-!-margin-bottom-0">{{ caseName }}</p>
+      <p class="govuk-body-s govuk-!-margin-bottom-0">{{ caseReference }}</p>
+    </div>
+    <p class="govuk-body-s govuk-!-margin-bottom-0"> <span class="js-autosave-time"></span></p>
+  </div>
+
+  <a href="cap-home-1.html" class="govuk-back-link">Back</a>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl" id="action-plan-heading">Action plan</h1>
+
+      <dl class="govuk-summary-list govuk-summary-list--no-border" id="action-plan-summary"></dl>
+
+      <a id="edit-action-plan-button" href="add-action-point-1.html" class="govuk-button" role="button" draggable="false" data-module="govuk-button">
+        Edit action plan
+      </a>
+
+      <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+      <div id="action-points"></div>
+    </div>
+  </div>
+
+  <script>
+    function getActionPoints() {
+      try {
+        return JSON.parse(localStorage.getItem('actionPointData') || '[]');
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function formatGdsDate(value) {
+      if (!value) return 'Not provided';
+      const date = new Date(value + 'T12:00:00');
+      if (Number.isNaN(date.getTime())) return value;
+      return new Intl.DateTimeFormat('en-GB', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      }).format(date);
+    }
+
+    function getPlanIndex() {
+      const params = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+      return Number(params.get('plan'));
+    }
+
+    function summaryRow(key, value) {
+      return '<div class="govuk-summary-list__row">' +
+        '<dt class="govuk-summary-list__key">' + key + '</dt>' +
+        '<dd class="govuk-summary-list__value">' + value + '</dd>' +
+        '</div>';
+    }
+
+    function descriptionWithShowMore(value, idSuffix) {
+      if (!value || !value.trim()) return 'Not provided';
+
+      const words = value.trim().split(/\s+/);
+      if (words.length <= 20) return value;
+
+      const preview = words.slice(0, 20).join(' ');
+      const remainder = words.slice(20).join(' ');
+      const remainderId = 'description-remainder-' + idSuffix;
+      const showMoreId = 'description-show-more-' + idSuffix;
+      const showLessId = 'description-show-less-' + idSuffix;
+
+      return preview +
+        ' <span id="' + remainderId + '" hidden> ' + remainder + '</span>' +
+        ' <a href="#" id="' + showMoreId + '" class="govuk-link govuk-link--no-visited-state js-description-show-more" data-target="' + remainderId + '" data-less-link="' + showLessId + '">View more</a>' +
+        ' <a href="#" id="' + showLessId + '" class="govuk-link govuk-link--no-visited-state js-description-show-less" data-target="' + remainderId + '" data-more-link="' + showMoreId + '" hidden>Show less</a>';
+    }
+
+    function render() {
+      const sentPlansCount = 2;
+      const items = getActionPoints();
+      const index = getPlanIndex();
+      const heading = document.getElementById('action-plan-heading');
+      const summary = document.getElementById('action-plan-summary');
+      const pointsTarget = document.getElementById('action-points');
+
+      const plan = items[index];
+
+      if (!plan) {
+        heading.textContent = 'Action plan not found';
+        summary.innerHTML = '';
+        pointsTarget.innerHTML = '<p class="govuk-body">This action plan could not be found. It may have been deleted.</p>';
+        return;
+      }
+
+      heading.textContent = 'Action plan ' + (sentPlansCount + index + 1);
+
+      const editButton = document.getElementById('edit-action-plan-button');
+      if (editButton) editButton.href = 'add-action-point-1.html#plan=' + index;
+
+      summary.innerHTML =
+        summaryRow('Due date', formatGdsDate(plan.dueDate)) +
+        summaryRow('Chaser task date', formatGdsDate(plan.chaserDate));
+
+      const points = Array.isArray(plan.actionPoints) ? plan.actionPoints : [];
+
+      if (!points.length) {
+        pointsTarget.innerHTML = '';
+        return;
+      }
+
+      pointsTarget.innerHTML = points.map(function (point, i) {
+        const descriptionValue = descriptionWithShowMore(point.description, index + '-' + i);
+
+        return '' +
+          (i > 0 ? '<hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">' : '') +
+          '<div class="app-action-point-header">' +
+            '<h2 class="govuk-heading-m govuk-!-margin-bottom-0">' +
+              '<a class="govuk-link govuk-link--no-visited-state" href="action-point-open.html#plan=' + index + '&point=' + i + '">Action point ' + (i + 1) + '</a>' +
+            '</h2>' +
+            '<span class="govuk-tag govuk-tag--grey">Draft</span>' +
+          '</div>' +
+          '<dl class="govuk-summary-list govuk-summary-list--no-border">' +
+            summaryRow('Related to suspects', point.suspect || 'Not provided') +
+            summaryRow('Action', point.action || 'Not provided') +
+            summaryRow('Description of action', descriptionValue) +
+          '</dl>';
+      }).join('') +
+        '<hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">';
+    }
+
+    document.addEventListener('click', function (event) {
+      const showMoreLink = event.target.closest('.js-description-show-more');
+      if (showMoreLink) {
+        event.preventDefault();
+        const targetId = showMoreLink.getAttribute('data-target');
+        const lessLinkId = showMoreLink.getAttribute('data-less-link');
+        const remainder = document.getElementById(targetId);
+        const showLessLink = document.getElementById(lessLinkId);
+        if (!remainder) return;
+
+        remainder.hidden = false;
+        showMoreLink.hidden = true;
+        if (showLessLink) showLessLink.hidden = false;
+        return;
+      }
+
+      const showLessLink = event.target.closest('.js-description-show-less');
+      if (!showLessLink) return;
+
+      event.preventDefault();
+      const targetId = showLessLink.getAttribute('data-target');
+      const moreLinkId = showLessLink.getAttribute('data-more-link');
+      const remainder = document.getElementById(targetId);
+      const showMoreLinkAgain = document.getElementById(moreLinkId);
+      if (!remainder) return;
+
+      remainder.hidden = true;
+      showLessLink.hidden = true;
+      if (showMoreLinkAgain) showMoreLinkAgain.hidden = false;
+    });
+
+    render();
+  </script>
+{% endblock %}

@@ -1,0 +1,58 @@
+{#
+For guidance on how to use layouts see:
+https://prototype-kit.service.gov.uk/docs/how-to-use-layouts
+#}
+
+{% extends "govuk-prototype-kit/layouts/govuk-branded.njk" %}
+{% from "govuk/components/service-navigation/macro.njk" import govukServiceNavigation %}
+
+{% block header %}
+  {{ govukHeader() }}
+  {{ govukServiceNavigation({
+      serviceName: serviceName,
+      serviceUrl: "/prototype-index"
+  })}}
+{% endblock %}
+
+<head>
+  <!-- GOV.UK / MOJ styles (add these or your build outputs) -->
+  <link rel="stylesheet" href="/node_modules/govuk-frontend/govuk/all.css">
+  <link rel="stylesheet" href="/node_modules/govuk-frontend/govuk/all-ie8.css">
+  <link rel="stylesheet" href="/node_modules/@govuk-prototype-kit/common/assets/stylesheets/app-step-nav.css">
+  <style>
+    .govuk-grid-row {
+      max-width: 1200px;
+    }
+
+    .govuk-width-container {
+      max-width: 1200px;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- GOV.UK / MOJ scripts (add before closing body) -->
+  <script src="/node_modules/govuk-frontend/govuk/all.js"></script>
+  <script src="/node_modules/@govuk-prototype-kit/common/assets/javascripts/app-step-nav.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      if (window.self !== window.top) {
+        [
+          '.govuk-header',
+          '.govuk-service-navigation',
+          '.govuk-footer',
+          '.app-autosave-status'
+        ].forEach(function (selector) {
+          document.querySelectorAll(selector).forEach(function (el) {
+            el.remove();
+          });
+        });
+      }
+
+      if (window.GOVUK && GOVUK.initAll) {
+        GOVUK.initAll();
+      }
+    });
+  </script>
+</body>
