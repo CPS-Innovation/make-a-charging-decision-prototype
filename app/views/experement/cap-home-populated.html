@@ -1,0 +1,345 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  GOV.UK page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+{% block beforeContent %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{{ govukBackLink({
+text: "Back",
+href: "javascript:history.back()"
+}) }}
+{% endblock %}
+{% set caseName = "McLOVE, Eoin and 4 Others" %}
+{% set caseReference = "45AA209820/1" %}
+{% block content %}
+
+ <style>
+    .app-step-nav__button,
+    .app-step-nav__header.js-toggle-panel {
+      display: none !important;
+    }
+
+    .app-step-nav__panel {
+      display: block !important;
+    }
+
+    .step-content {
+      margin-top: 0.75rem;
+    }
+
+    .step-content[hidden] {
+      display: none;
+    }
+
+    .app-step-nav__step {
+      display: block;
+      margin-bottom: 1rem;
+    }
+
+    .step-inline-link,
+    .step-inline-link:visited,
+    .step-inline-link:hover,
+    .step-inline-link:active,
+    .step-inline-link:focus {
+      color: #0b0c0c;
+      text-decoration: none;
+    }
+
+    .step-inline-link:hover,
+    .step-inline-link:focus {
+      color: #1d70b8;
+      text-decoration: underline;
+    }
+
+    #step-toggle-link {
+      display: inline-block;
+      margin-bottom: 1rem;
+      color: #1d70b8;
+      text-decoration: underline;
+      line-height: 1.25;
+      font-size: 19px;
+    }
+
+    #step-toggle-link:hover,
+    #step-toggle-link:focus,
+    #step-toggle-link:active {
+      color: #003078;
+      text-decoration-thickness: 3px;
+      text-underline-offset: 0.1em;
+    }
+
+    #step-toggle-link:visited {
+      color: #4c2c92;
+    }
+
+    .js-step-title,
+    .js-step-title:link,
+    .js-step-title:visited,
+    .js-step-title:active,
+    .js-step-title:focus {
+      color: #0b0c0c;
+      text-decoration: none;
+    }
+
+    .js-step-title:hover,
+    .js-step-title:focus {
+      color: #1d70b8;
+      text-decoration: underline;
+    }
+
+    /* The shared layout (includes/wide.html) sets the page width to 1400px,
+       but the real CPS site this page is modelled on is 1200px wide. Since
+       that shared file affects every other page using this layout, the
+       narrower width is overridden here instead, scoped to this page only. */
+    .govuk-main-wrapper {
+        max-width: 1200px;
+    }
+
+    .govuk-width-container {
+        max-width: 1200px;
+    }
+
+    /* Small addition alongside the shared identity bar - not part of that
+       shared component, since autosave status is specific to pages with an
+       answer to save, not every page that shows case context. */
+    .app-autosave-status {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        border-bottom: 1px solid #b1b4b6;
+        padding-bottom: 15px;
+        margin-bottom: 40px;
+    }
+
+    /* Rich-text answer box. GOV.UK Frontend has no rich-text-editor
+       component, so this is a bespoke pattern carried over from the witex
+       prototype's L-case-review-html-3.html - a contenteditable area with
+       an execCommand toolbar, and a character count styled to match the
+       real govukCharacterCount message. */
+    .app-answer-editor {
+        border: 2px solid #0b0c0c;
+    }
+
+    .app-answer-editor__toolbar {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+        padding: 5px;
+        background: #f3f2f1;
+    }
+
+    .app-answer-editor__toolbar button {
+        font-family: inherit;
+        font-size: 19px;
+        line-height: 1;
+        min-width: 40px;
+        padding: 10px;
+        background: none;
+        border: 0;
+        cursor: pointer;
+    }
+
+    .app-answer-editor__toolbar button:hover {
+        background: #e0e0e0;
+    }
+
+    .app-answer-editor__toolbar button:focus {
+        outline: 3px solid transparent;
+        background: #ffdd00;
+        box-shadow: 0 2px 0 #0b0c0c;
+    }
+
+    .app-answer-editor__body {
+        min-height: 300px;
+        padding: 15px;
+        outline: none;
+    }
+
+    .app-answer-editor__body:focus {
+        outline: 3px solid #ffdd00;
+        outline-offset: 0;
+        box-shadow: inset 0 0 0 2px;
+    }
+
+    /* Keeps the page's <h1> as the first heading in the DOM (the nav's own
+       h2/h3 step titles come after it) while still showing the nav visually
+       on the left - see accessibility heading-order rule in ai-context.md */
+    .app-case-headline-row {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .app-case-headline-row .govuk-grid-column-one-third {
+        order: 1;
+    }
+
+    .app-case-headline-row .govuk-grid-column-two-thirds {
+        order: 2;
+    }
+    
+  </style>
+
+<div class="app-autosave-status">
+    <div>
+      <p class="govuk-heading-s govuk-!-margin-bottom-0">{{ caseName }}</p>
+      <p class="govuk-body-s govuk-!-margin-bottom-0">{{ caseReference }}</p>
+    </div>
+    <p class="govuk-body-s govuk-!-margin-bottom-0">Autosave is on. Last saved <span class="js-autosave-time"></span></p>
+  </div>
+
+  <div class="govuk-grid-row">
+    <style>
+      .action-point-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .action-point-header h3 {
+        margin: 0;
+      }
+
+     /* remove borders from summary lists */
+     .govuk-summary-list--no-border .govuk-summary-list__row,
+     .govuk-summary-list--no-border .govuk-summary-list__row + .govuk-summary-list__row {
+       border-bottom: 0;
+     }
+     .govuk-summary-list--no-border .govuk-summary-list__row { padding-bottom: 0; }
+
+     #action-points-content {
+       max-width: 800px;
+     }
+
+     #action-points-to-send {
+       max-width: 800px;
+     }
+    </style>
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">Case action plan</h1>
+
+      <div id="more-detail-hint" class="govuk-hint">
+        <p class="govuk-body">
+          Manage or create a case action plan to send to the relevant authorities. You can add, change and delete action points before you submit this review.
+        </p>
+      </div>
+
+      <h2 class="govuk-heading-m">Action points to be sent</h2>
+      <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+      <div id="action-points-to-send"></div>
+
+       <a id="add-action-point-button" class="govuk-button govuk-button--secondary" href="add-action-point.html">
+        Add action point
+      </a>
+
+
+      <h2 class="govuk-heading-m">Previously sent action points</h2>
+      <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+ 
+      <div>
+        <p class="govuk-body">No action points added</p>
+      </div>
+ 
+      <div id="action-points-content"></div>
+
+      <div class="govuk-button-group">
+        <a href="work-managment-overview.html" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+          Exit action plan
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function getActionPoints() {
+      try {
+        return JSON.parse(localStorage.getItem('actionPointData') || '[]');
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveActionPoints(list) {
+      localStorage.setItem('actionPointData', JSON.stringify(list));
+    }
+
+    function formatGdsDate(value) {
+      if (!value) return 'Not provided';
+
+      const date = new Date(value + 'T12:00:00');
+      if (Number.isNaN(date.getTime())) return value;
+
+      return new Intl.DateTimeFormat('en-GB', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      }).format(date);
+    }
+
+    function renderSavedData() {
+      const items = getActionPoints();
+      const toSendTarget = document.getElementById('action-points-to-send');
+      const sentTarget = document.getElementById('action-points-content');
+      const addButton = document.getElementById('add-action-point-button');
+
+      // Populate "Action points to be sent" section
+      if (items.length > 0) {
+        const html = items.map(function (item, index) {
+          const rows = [
+            { key: 'Date required by', value: formatGdsDate(item.dueDate) },
+            { key: 'Chaser task date', value: formatGdsDate(item.chaserDate) },
+            { key: 'Related to suspect(s)', value: item.suspect || 'Not provided' },
+            {
+              key: 'Action points',
+              value: item.actionPoints && item.actionPoints.length
+                ? item.actionPoints.join('<br>')
+                : 'None selected'
+            }
+          ];
+
+          return '' +
+            '<div class="action-point-header">' +
+              '<h3 class="govuk-heading-s">Action point ' + (index + 1) + '</h3>' +
+              '<span class="govuk-tag govuk-tag--grey">' + (item.status || 'Draft') + '</span>' +
+            '</div>' +
+            '<dl class="govuk-summary-list govuk-summary-list--no-border">' +
+              rows.map(function (row) {
+                return '<div class="govuk-summary-list__row">' +
+                  '<dt class="govuk-summary-list__key">' + row.key + '</dt>' +
+                  '<dd class="govuk-summary-list__value">' + row.value + '</dd>' +
+                  '</div>';
+              }).join('') +
+            '</dl>' +
+            '<div class="govuk-button-group">' +
+              '<a href="add-action-point.html" class="govuk-button govuk-button--secondary" data-module="govuk-button">Change</a>' +
+              '<button type="button" class="govuk-button govuk-button--warning" data-module="govuk-button" data-delete-index="' + index + '">Delete</button>' +
+            '</div>' +
+            '<hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">';
+        }).join('');
+
+        toSendTarget.innerHTML = html;
+
+        document.querySelectorAll('[data-delete-index]').forEach(function (button) {
+          button.addEventListener('click', function () {
+            const index = Number(button.getAttribute('data-delete-index'));
+            const list = getActionPoints();
+            list.splice(index, 1);
+            saveActionPoints(list);
+            renderSavedData();
+          });
+        });
+      } else {
+        toSendTarget.innerHTML = '';
+      }
+
+      // "Previously sent action points" section stays empty
+      sentTarget.innerHTML = '';
+      addButton.textContent = 'Add action point';
+    }
+
+    renderSavedData();
+  </script>
+{% endblock %}

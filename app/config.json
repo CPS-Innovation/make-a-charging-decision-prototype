@@ -1,0 +1,8 @@
+{
+  "serviceName": "CPS",
+  "plugins": {
+    "govuk-frontend": {
+      "rebrand": true
+    }
+  }
+}

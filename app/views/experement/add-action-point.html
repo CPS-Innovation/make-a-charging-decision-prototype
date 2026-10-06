@@ -1,0 +1,680 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  GOV.UK page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+{% set caseName = "McLOVE, Eoin and 4 Others" %}
+{% set caseReference = "45AA209820/1" %}
+{% block content %}
+
+  <style>
+    .app-step-nav__button,
+    .app-step-nav__header.js-toggle-panel {
+      display: none !important;
+    }
+
+    .app-step-nav__panel {
+      display: block !important;
+    }
+
+    .step-content {
+      margin-top: 0.75rem;
+    }
+
+    .step-content[hidden] {
+      display: none;
+    }
+
+    .app-step-nav__step {
+      display: block;
+      margin-bottom: 1rem;
+    }
+
+    .step-inline-link,
+    .step-inline-link:visited,
+    .step-inline-link:hover,
+    .step-inline-link:active,
+    .step-inline-link:focus {
+      color: #0b0c0c;
+      text-decoration: none;
+    }
+
+    .step-inline-link:hover,
+    .step-inline-link:focus {
+      color: #1d70b8;
+      text-decoration: underline;
+    }
+
+    #step-toggle-link {
+      display: inline-block;
+      margin-bottom: 1rem;
+      color: #1d70b8;
+      text-decoration: underline;
+      line-height: 1.25;
+      font-size: 19px;
+    }
+
+    #step-toggle-link:hover,
+    #step-toggle-link:focus,
+    #step-toggle-link:active {
+      color: #003078;
+      text-decoration-thickness: 3px;
+      text-underline-offset: 0.1em;
+    }
+
+    #step-toggle-link:visited {
+      color: #4c2c92;
+    }
+
+    .js-step-title,
+    .js-step-title:link,
+    .js-step-title:visited,
+    .js-step-title:active,
+    .js-step-title:focus {
+      color: #0b0c0c;
+      text-decoration: none;
+    }
+
+    .js-step-title:hover,
+    .js-step-title:focus {
+      color: #1d70b8;
+      text-decoration: underline;
+    }
+
+    /* The shared layout (includes/wide.html) sets the page width to 1400px,
+       but the real CPS site this page is modelled on is 1200px wide. Since
+       that shared file affects every other page using this layout, the
+       narrower width is overridden here instead, scoped to this page only. */
+    .govuk-main-wrapper {
+        max-width: 1200px;
+    }
+
+    .govuk-width-container {
+        max-width: 1200px;
+    }
+
+    /* Small addition alongside the shared identity bar - not part of that
+       shared component, since autosave status is specific to pages with an
+       answer to save, not every page that shows case context. */
+    .app-autosave-status {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        border-bottom: 1px solid #b1b4b6;
+        padding-bottom: 15px;
+        margin-bottom: 40px;
+    }
+
+    /* Rich-text answer box. GOV.UK Frontend has no rich-text-editor
+       component, so this is a bespoke pattern carried over from the witex
+       prototype's L-case-review-html-3.html - a contenteditable area with
+       an execCommand toolbar, and a character count styled to match the
+       real govukCharacterCount message. */
+    .app-answer-editor {
+        border: 2px solid #0b0c0c;
+    }
+
+    .app-answer-editor__toolbar {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+        padding: 5px;
+        background: #f3f2f1;
+    }
+
+    .app-answer-editor__toolbar button {
+        font-family: inherit;
+        font-size: 19px;
+        line-height: 1;
+        min-width: 40px;
+        padding: 10px;
+        background: none;
+        border: 0;
+        cursor: pointer;
+    }
+
+    .app-answer-editor__toolbar button:hover {
+        background: #e0e0e0;
+    }
+
+    .app-answer-editor__toolbar button:focus {
+        outline: 3px solid transparent;
+        background: #ffdd00;
+        box-shadow: 0 2px 0 #0b0c0c;
+    }
+
+    .app-answer-editor__body {
+        min-height: 300px;
+        padding: 15px;
+        outline: none;
+    }
+
+    .app-answer-editor__body:focus {
+        outline: 3px solid #ffdd00;
+        outline-offset: 0;
+        box-shadow: inset 0 0 0 2px;
+    }
+
+    /* Keeps the page's <h1> as the first heading in the DOM (the nav's own
+       h2/h3 step titles come after it) while still showing the nav visually
+       on the left - see accessibility heading-order rule in ai-context.md */
+    .app-case-headline-row {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .app-case-headline-row .govuk-grid-column-one-third {
+        order: 1;
+    }
+
+    .app-case-headline-row .govuk-grid-column-two-thirds {
+        order: 2;
+    }
+    
+  </style>
+
+<div class="app-autosave-status">
+    <div>
+      <p class="govuk-heading-s govuk-!-margin-bottom-0">{{ caseName }}</p>
+      <p class="govuk-body-s govuk-!-margin-bottom-0">{{ caseReference }}</p>
+    </div>
+    <p class="govuk-body-s govuk-!-margin-bottom-0">Autosave is on. Last saved <span class="js-autosave-time"></span></p>
+  </div>
+
+<a href="cap-home.html" class="govuk-back-link">Back</a>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l">Add action point</h1>
+
+    <form id="action-point-form">
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="due-date">
+          Date required by
+        </label>
+        <div id="due-date-hint" class="govuk-hint">
+          For example, 17/5/2024.
+        </div>
+        <input class="govuk-input" id="due-date" name="due-date" type="date" aria-describedby="due-date-hint">
+      </div>
+
+      <div class="govuk-button-group">
+        <a href="#" class="govuk-link govuk-link--no-visited-state" onclick="setDueDate(0); return false;">Today</a>
+        <a href="#" class="govuk-link govuk-link--no-visited-state" onclick="setDueDate(1); return false;">+1 day</a>
+        <a href="#" class="govuk-link govuk-link--no-visited-state" onclick="setDueDate(7); return false;">+7 day</a>
+        <a href="#" class="govuk-link govuk-link--no-visited-state" onclick="setDueDate(14); return false;">+14 day</a>
+        <a href="#" class="govuk-link govuk-link--no-visited-state" onclick="setDueDate(28); return false;">+28 day</a>
+      </div>
+
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="chaser-date">
+          Chaser task date (optional)
+        </label>
+        <div id="chaser-date-hint" class="govuk-hint">
+          For example, 24/5/2024.
+        </div>
+        <input class="govuk-input" id="chaser-date" name="chaser-date" type="date" aria-describedby="chaser-date-hint">
+      </div>
+
+      <div class="govuk-button-group">
+        <a href="#" class="govuk-link govuk-link--no-visited-state" onclick="setChaserDate(-1); return false;">1 day before date required</a>
+      </div>
+
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="sort">
+          Related to suspect(s)
+        </label>
+        <select class="govuk-select" id="sort" name="sort">
+          <option value="Howard Wolowitz">Howard Wolowitz</option>
+          <option value="Sheldon Cooper" selected>Sheldon Cooper</option>
+          <option value="Leonard Hofstadter">Leonard Hofstadter</option>
+          <option value="Raj Koothrappali">Raj Koothrappali</option>
+        </select>
+      </div>
+
+      <div class="govuk-form-group">
+        <fieldset class="govuk-fieldset" aria-describedby="waste-hint">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+            <h1 class="govuk-fieldset__heading">
+              Add an action point
+            </h1>
+          </legend>
+          <div id="waste-hint" class="govuk-hint">
+            Select all that apply
+          </div>
+
+          <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                <h2 class="govuk-fieldset__heading">
+                  Witness and victims
+                </h2>
+              </legend>
+
+              <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                <div class="govuk-checkboxes__item">
+                  <input class="govuk-checkboxes__input" id="waste" name="waste" type="checkbox" value="Key witness details" data-aria-controls="conditional-waste">
+                  <label class="govuk-label govuk-checkboxes__label" for="waste">
+                    Key witness details
+                  </label>
+                </div>
+                <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-waste">
+                  <div class="govuk-form-group">
+                    <label class="govuk-label" for="waste-detail">
+                      Description of key witness details (optional)
+                    </label>
+                    <textarea class="govuk-textarea" id="waste-detail" name="waste-detail" rows="4"></textarea>
+                  </div>
+                </div>
+
+                <div class="govuk-checkboxes__item">
+                  <input class="govuk-checkboxes__input" id="waste-2" name="waste" type="checkbox" value="All key witness statements" data-aria-controls="conditional-waste-2">
+                  <label class="govuk-label govuk-checkboxes__label" for="waste-2">
+                    All key witness statements
+                  </label>
+                </div>
+                <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-waste-2">
+                  <div class="govuk-form-group">
+                    <label class="govuk-label" for="waste-2-detail">
+                      Description of all key witness statements (optional)
+                    </label>
+                    <textarea class="govuk-textarea" id="waste-2-detail" name="waste-2-detail" rows="4"></textarea>
+                  </div>
+                </div>
+
+                <div class="govuk-checkboxes__item">
+                  <input class="govuk-checkboxes__input" id="waste-3" name="waste" type="checkbox" value="Witness availability" data-aria-controls="conditional-waste-3">
+                  <label class="govuk-label govuk-checkboxes__label" for="waste-3">
+                    Witness availability
+                  </label>
+                </div>
+                <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-waste-3">
+                  <div class="govuk-form-group">
+                    <label class="govuk-label" for="waste-3-detail">
+                      Description of witness availability (optional)
+                    </label>
+                    <textarea class="govuk-textarea" id="waste-3-detail" name="waste-3-detail" rows="4"></textarea>
+                  </div>
+                </div>
+
+                <div class="govuk-checkboxes__item">
+                  <input class="govuk-checkboxes__input" id="waste-4" name="waste" type="checkbox" value="Victim personal statement" data-aria-controls="conditional-waste-4">
+                  <label class="govuk-label govuk-checkboxes__label" for="waste-4">
+                    Victim personal statement
+                  </label>
+                </div>
+                <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-waste-4">
+                  <div class="govuk-form-group">
+                    <label class="govuk-label" for="waste-4-detail">
+                      Description of victim personal statement (optional)
+                    </label>
+                    <textarea class="govuk-textarea" id="waste-4-detail" name="waste-4-detail" rows="4"></textarea>
+                  </div>
+                </div>
+
+                <div class="govuk-checkboxes__item">
+                  <input class="govuk-checkboxes__input" id="waste-5" name="waste" type="checkbox" value="Special measures material" data-aria-controls="conditional-waste-5">
+                  <label class="govuk-label govuk-checkboxes__label" for="waste-5">
+                    Special measures material
+                  </label>
+                </div>
+                <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-waste-5">
+                  <div class="govuk-form-group">
+                    <label class="govuk-label" for="waste-5-detail">
+                      Description of special measures material (optional)
+                    </label>
+                    <textarea class="govuk-textarea" id="waste-5-detail" name="waste-5-detail" rows="4"></textarea>
+                  </div>
+                </div>
+
+                <div class="govuk-checkboxes__item">
+                  <input class="govuk-checkboxes__input" id="waste-6" name="waste" type="checkbox" value="Previous convictions for all prosecution witnesses" data-aria-controls="conditional-waste-6">
+                  <label class="govuk-label govuk-checkboxes__label" for="waste-6">
+                    Previous convictions for all prosecution witnesses
+                  </label>
+                </div>
+                <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-waste-6">
+                  <div class="govuk-form-group">
+                    <label class="govuk-label" for="waste-6-detail">
+                      Description of previous convictions for all prosecution witnesses (optional)
+                    </label>
+                    <textarea class="govuk-textarea" id="waste-6-detail" name="waste-6-detail" rows="4"></textarea>
+                  </div>
+                </div>
+
+                <div class="govuk-checkboxes__item">
+                  <input class="govuk-checkboxes__input" id="waste-7" name="waste" type="checkbox" value="Compensation details" data-aria-controls="conditional-waste-7">
+                  <label class="govuk-label govuk-checkboxes__label" for="waste-7">
+                    Compensation details
+                  </label>
+                </div>
+                <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-waste-7">
+                  <div class="govuk-form-group">
+                    <label class="govuk-label" for="waste-7-detail">
+                      Description of compensation details (optional)
+                    </label>
+                    <textarea class="govuk-textarea" id="waste-7-detail" name="waste-7-detail" rows="4"></textarea>
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+
+          <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                <h2 class="govuk-fieldset__heading">
+                  Exhibits and evidence
+                </h2>
+              </legend>
+
+              <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                <div class="govuk-checkboxes__item">
+                  <input class="govuk-checkboxes__input" id="exhibits-1" name="exhibits" type="checkbox" value="Key exhibits" data-aria-controls="conditional-exhibits-1">
+                  <label class="govuk-label govuk-checkboxes__label" for="exhibits-1">
+                    Key exhibits
+                  </label>
+                </div>
+                <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-exhibits-1">
+                  <div class="govuk-form-group">
+                    <label class="govuk-label" for="exhibits-1-detail">
+                      Description of key exhibits (optional)
+                    </label>
+                    <textarea class="govuk-textarea" id="exhibits-1-detail" name="exhibits-1-detail" rows="4"></textarea>
+                  </div>
+                </div>
+
+                <div class="govuk-checkboxes__item">
+                  <input class="govuk-checkboxes__input" id="exhibits-2" name="exhibits" type="checkbox" value="Identification evidence" data-aria-controls="conditional-exhibits-2">
+                  <label class="govuk-label govuk-checkboxes__label" for="exhibits-2">
+                    Identification evidence
+                  </label>
+                </div>
+                <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-exhibits-2">
+                  <div class="govuk-form-group">
+                    <label class="govuk-label" for="exhibits-2-detail">
+                      Description of identification evidence (optional)
+                    </label>
+                    <textarea class="govuk-textarea" id="exhibits-2-detail" name="exhibits-2-detail" rows="4"></textarea>
+                  </div>
+                </div>
+
+                <div class="govuk-checkboxes__item">
+                  <input class="govuk-checkboxes__input" id="exhibits-3" name="exhibits" type="checkbox" value="CCTV material" data-aria-controls="conditional-exhibits-3">
+                  <label class="govuk-label govuk-checkboxes__label" for="exhibits-3">
+                    CCTV material
+                  </label>
+                </div>
+                <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-exhibits-3">
+                  <div class="govuk-form-group">
+                    <label class="govuk-label" for="exhibits-3-detail">
+                      Description of CCTV material (optional)
+                    </label>
+                    <textarea class="govuk-textarea" id="exhibits-3-detail" name="exhibits-3-detail" rows="4"></textarea>
+                  </div>
+                </div>
+
+                <div class="govuk-checkboxes__item">
+                  <input class="govuk-checkboxes__input" id="exhibits-4" name="exhibits" type="checkbox" value="Visually recorded evidence" data-aria-controls="conditional-exhibits-4">
+                  <label class="govuk-label govuk-checkboxes__label" for="exhibits-4">
+                    Visually recorded evidence
+                  </label>
+                </div>
+                <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-exhibits-4">
+                  <div class="govuk-form-group">
+                    <label class="govuk-label" for="exhibits-4-detail">
+                      Description of visually recorded evidence (optional)
+                    </label>
+                    <textarea class="govuk-textarea" id="exhibits-4-detail" name="exhibits-4-detail" rows="4"></textarea>
+                  </div>
+                </div>
+
+                <div class="govuk-checkboxes__item">
+                  <input class="govuk-checkboxes__input" id="exhibits-5" name="exhibits" type="checkbox" value="Initial drugs assessment" data-aria-controls="conditional-exhibits-5">
+                  <label class="govuk-label govuk-checkboxes__label" for="exhibits-5">
+                    Initial drugs assessment
+                  </label>
+                </div>
+                <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-exhibits-5">
+                  <div class="govuk-form-group">
+                    <label class="govuk-label" for="exhibits-5-detail">
+                      Description of initial drugs assessment (optional)
+                    </label>
+                    <textarea class="govuk-textarea" id="exhibits-5-detail" name="exhibits-5-detail" rows="4"></textarea>
+                  </div>
+                </div>
+
+                <div class="govuk-checkboxes__item">
+                  <input class="govuk-checkboxes__input" id="exhibits-6" name="exhibits" type="checkbox" value="Forensic evidence" data-aria-controls="conditional-exhibits-6">
+                  <label class="govuk-label govuk-checkboxes__label" for="exhibits-6">
+                    Forensic evidence
+                  </label>
+                </div>
+                <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-exhibits-6">
+                  <div class="govuk-form-group">
+                    <label class="govuk-label" for="exhibits-6-detail">
+                      Description of forensic evidence (optional)
+                    </label>
+                    <textarea class="govuk-textarea" id="exhibits-6-detail" name="exhibits-6-detail" rows="4"></textarea>
+                  </div>
+                </div>
+
+                <div class="govuk-checkboxes__item">
+                  <input class="govuk-checkboxes__input" id="exhibits-7" name="exhibits" type="checkbox" value="Medical evidence" data-aria-controls="conditional-exhibits-7">
+                  <label class="govuk-label govuk-checkboxes__label" for="exhibits-7">
+                    Medical evidence
+                  </label>
+                </div>
+                <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-exhibits-7">
+                  <div class="govuk-form-group">
+                    <label class="govuk-label" for="exhibits-7-detail">
+                      Description of medical evidence (optional)
+                    </label>
+                    <textarea class="govuk-textarea" id="exhibits-7-detail" name="exhibits-7-detail" rows="4"></textarea>
+                  </div>
+                </div>
+
+                <div class="govuk-checkboxes__item">
+                  <input class="govuk-checkboxes__input" id="exhibits-8" name="exhibits" type="checkbox" value="Unused or sensitive material" data-aria-controls="conditional-exhibits-8">
+                  <label class="govuk-label govuk-checkboxes__label" for="exhibits-8">
+                    Unused or sensitive material
+                  </label>
+                </div>
+                <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-exhibits-8">
+                  <div class="govuk-form-group">
+                    <label class="govuk-label" for="exhibits-8-detail">
+                      Description of unused or sensitive material (optional)
+                    </label>
+                    <textarea class="govuk-textarea" id="exhibits-8-detail" name="exhibits-8-detail" rows="4"></textarea>
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+
+          <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                <h2 class="govuk-fieldset__heading">
+                  Suspects
+                </h2>
+              </legend>
+
+              <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                <div class="govuk-checkboxes__item">
+                  <input class="govuk-checkboxes__input" id="suspects-1" name="suspects" type="checkbox" value="ROTI" data-aria-controls="conditional-suspects-1">
+                  <label class="govuk-label govuk-checkboxes__label" for="suspects-1">
+                    Record of taped interview (ROTI)
+                  </label>
+                </div>
+                <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-suspects-1">
+                  <div class="govuk-form-group">
+                    <label class="govuk-label" for="suspects-1-detail">
+                      Description of record of taped interview (ROTI) (optional)
+                    </label>
+                    <textarea class="govuk-textarea" id="suspects-1-detail" name="suspects-1-detail" rows="4"></textarea>
+                  </div>
+                </div>
+
+                <div class="govuk-checkboxes__item">
+                  <input class="govuk-checkboxes__input" id="suspects-2" name="suspects" type="checkbox" value="Bad character / dangerous offender information" data-aria-controls="conditional-suspects-2">
+                  <label class="govuk-label govuk-checkboxes__label" for="suspects-2">
+                    Bad character / dangerous offender information
+                  </label>
+                </div>
+                <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-suspects-2">
+                  <div class="govuk-form-group">
+                    <label class="govuk-label" for="suspects-2-detail">
+                      Description of bad character / dangerous offender information (optional)
+                    </label>
+                    <textarea class="govuk-textarea" id="suspects-2-detail" name="suspects-2-detail" rows="4"></textarea>
+                  </div>
+                </div>
+
+                <div class="govuk-checkboxes__item">
+                  <input class="govuk-checkboxes__input" id="suspects-3" name="suspects" type="checkbox" value="Orders on conviction" data-aria-controls="conditional-suspects-3">
+                  <label class="govuk-label govuk-checkboxes__label" for="suspects-3">
+                    Orders on conviction
+                  </label>
+                </div>
+                <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-suspects-3">
+                  <div class="govuk-form-group">
+                    <label class="govuk-label" for="suspects-3-detail">
+                      Description of orders on conviction (optional)
+                    </label>
+                    <textarea class="govuk-textarea" id="suspects-3-detail" name="suspects-3-detail" rows="4"></textarea>
+                  </div>
+                </div>
+
+                <div class="govuk-checkboxes__item">
+                  <input class="govuk-checkboxes__input" id="suspects-4" name="suspects" type="checkbox" value="POCA review" data-aria-controls="conditional-suspects-4">
+                  <label class="govuk-label govuk-checkboxes__label" for="suspects-4">
+                    Proceeds of Crime Act (POCA) review
+                  </label>
+                </div>
+                <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-suspects-4">
+                  <div class="govuk-form-group">
+                    <label class="govuk-label" for="suspects-4-detail">
+                      Description of POCA review (optional)
+                    </label>
+                    <textarea class="govuk-textarea" id="suspects-4-detail" name="suspects-4-detail" rows="4"></textarea>
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+
+          <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                <h2 class="govuk-fieldset__heading">
+                  Other
+                </h2>
+              </legend>
+
+              <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                <div class="govuk-checkboxes__item">
+                  <input class="govuk-checkboxes__input" id="other-1" name="other" type="checkbox" value="Other" data-aria-controls="conditional-other-1">
+                  <label class="govuk-label govuk-checkboxes__label" for="other-1">
+                    Other
+                  </label>
+                </div>
+                <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-other-1">
+                  <div class="govuk-form-group">
+                    <label class="govuk-label" for="other-1-detail">
+                      Description of other (optional)
+                    </label>
+                    <textarea class="govuk-textarea" id="other-1-detail" name="other-1-detail" rows="4"></textarea>
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+
+        </fieldset>
+      </div>
+
+      <div class="govuk-warning-text">
+        <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+        <strong class="govuk-warning-text__text">
+          <span class="govuk-visually-hidden">Warning</span>
+          Pre-charge action points cannot be changed or deleted after you submit this review.
+        </strong>
+      </div>
+
+      <div class="govuk-button-group">
+        <button type="button" class="govuk-button" data-module="govuk-button" onclick="document.getElementById('action-point-form').dispatchEvent(new Event('submit')); return false;">
+          Save actions
+         </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  function setDueDate(days) {
+    const date = new Date();
+    date.setDate(date.getDate() + days);
+    const formattedDate = date.toISOString().split('T')[0];
+    document.getElementById('due-date').value = formattedDate;
+  }
+
+  function setChaserDate(days) {
+    const dueDate = document.getElementById('due-date').value;
+    if (!dueDate) {
+      alert('Please set a due date first');
+      return;
+    }
+    const date = new Date(dueDate);
+    date.setDate(date.getDate() + days);
+    const formattedDate = date.toISOString().split('T')[0];
+    document.getElementById('chaser-date').value = formattedDate;
+  }
+
+  function getCheckedValues(name) {
+    return Array.from(document.querySelectorAll('input[name="' + name + '"]:checked')).map(function (input) {
+      const detailId = input.id + '-detail';
+      const detail = document.getElementById(detailId);
+      let value = input.value;
+      if (detail && detail.value.trim()) {
+        value += ': ' + detail.value.trim();
+      }
+      return value;
+    });
+  }
+
+  document.getElementById('action-point-form').addEventListener('submit', function (event) {
+    event.preventDefault();
+
+    let existing = [];
+    try {
+      const storedData = localStorage.getItem('actionPointData');
+      if (storedData && storedData !== 'undefined') {
+        existing = JSON.parse(storedData);
+        if (!Array.isArray(existing)) {
+          existing = [];
+        }
+      }
+    } catch (e) {
+      console.error('Error parsing localStorage:', e);
+      existing = [];
+    }
+
+    const newItem = {
+      dueDate: document.getElementById('due-date').value,
+      chaserDate: document.getElementById('chaser-date').value,
+      suspect: document.getElementById('sort').value,
+      actionPoints: [
+        ...getCheckedValues('waste'),
+        ...getCheckedValues('exhibits'),
+        ...getCheckedValues('suspects'),
+        ...getCheckedValues('other')
+      ]
+    };
+
+    existing.push(newItem);
+    localStorage.setItem('actionPointData', JSON.stringify(existing));
+    window.location.href = 'cap-home-populated.html';
+  });
+</script>
+{% endblock %}

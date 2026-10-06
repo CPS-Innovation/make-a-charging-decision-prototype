@@ -1,0 +1,711 @@
+{% extends "layouts/main.html" %}
+
+{% block header %}{% endblock %}
+{% block footer %}{% endblock %}
+
+{% block pageTitle %}
+  GOV.UK page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+{% set caseName = "COOPER, Sheldon and 4 Others" %}
+{% set caseReference = "45AA209820/1" %}
+{% block content %}
+
+  <style>
+    .app-step-nav__button,
+    .app-step-nav__header.js-toggle-panel {
+      display: none !important;
+    }
+
+    .app-step-nav__panel {
+      display: block !important;
+    }
+
+    .step-content {
+      margin-top: 0.75rem;
+    }
+
+    .step-content[hidden] {
+      display: none;
+    }
+
+    .app-step-nav__step {
+      display: block;
+      margin-bottom: 1rem;
+    }
+
+    .step-inline-link,
+    .step-inline-link:visited,
+    .step-inline-link:hover,
+    .step-inline-link:active,
+    .step-inline-link:focus {
+      color: #0b0c0c;
+      text-decoration: none;
+    }
+
+    .step-inline-link:hover,
+    .step-inline-link:focus {
+      color: #1d70b8;
+      text-decoration: underline;
+    }
+
+    #step-toggle-link {
+      display: inline-block;
+      margin-bottom: 1rem;
+      color: #1d70b8;
+      text-decoration: underline;
+      line-height: 1.25;
+      font-size: 19px;
+    }
+
+    #step-toggle-link:hover,
+    #step-toggle-link:focus,
+    #step-toggle-link:active {
+      color: #003078;
+      text-decoration-thickness: 3px;
+      text-underline-offset: 0.1em;
+    }
+
+    #step-toggle-link:visited {
+      color: #4c2c92;
+    }
+
+    .js-step-title,
+    .js-step-title:link,
+    .js-step-title:visited,
+    .js-step-title:active,
+    .js-step-title:focus {
+      color: #0b0c0c;
+      text-decoration: none;
+    }
+
+    .js-step-title:hover,
+    .js-step-title:focus {
+      color: #1d70b8;
+      text-decoration: underline;
+    }
+
+    /* The shared layout (includes/wide.html) sets the page width to 1400px,
+       but the real CPS site this page is modelled on is 1200px wide. Since
+       that shared file affects every other page using this layout, the
+       narrower width is overridden here instead, scoped to this page only. */
+    .govuk-main-wrapper {
+        max-width: 1200px;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+
+    .govuk-width-container {
+        max-width: 1200px;
+    }
+
+    .app-autosave-status {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-bottom: 1px solid #b1b4b6;
+      padding-bottom: 15px;
+      margin-bottom: 40px;
+    }
+
+    /* Rich-text answer box. GOV.UK Frontend has no rich-text-editor
+       component, so this is a bespoke pattern carried over from the witex
+       prototype's L-case-review-html-3.html - a contenteditable area with
+       an execCommand toolbar, and a character count styled to match the
+       real govukCharacterCount message. */
+    .app-answer-editor {
+        border: 2px solid #0b0c0c;
+    }
+
+    .app-answer-editor__toolbar {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+        padding: 5px;
+        background: #f3f2f1;
+    }
+
+    .app-answer-editor__toolbar button {
+        font-family: inherit;
+        font-size: 19px;
+        line-height: 1;
+        min-width: 40px;
+        padding: 10px;
+        background: none;
+        border: 0;
+        cursor: pointer;
+    }
+
+    .app-answer-editor__toolbar button:hover {
+        background: #e0e0e0;
+    }
+
+    .app-answer-editor__toolbar button:focus {
+        outline: 3px solid transparent;
+        background: #ffdd00;
+        box-shadow: 0 2px 0 #0b0c0c;
+    }
+
+    .app-answer-editor__body {
+        min-height: 300px;
+        padding: 15px;
+        outline: none;
+    }
+
+    .app-answer-editor__body:focus {
+        outline: 3px solid #ffdd00;
+        outline-offset: 0;
+        box-shadow: inset 0 0 0 2px;
+    }
+
+    /* Keeps the page's <h1> as the first heading in the DOM (the nav's own
+       h2/h3 step titles come after it) while still showing the nav visually
+       on the left - see accessibility heading-order rule in ai-context.md */
+    .app-case-headline-row {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .app-case-headline-row .govuk-grid-column-one-third {
+        order: 1;
+    }
+
+    .app-case-headline-row .govuk-grid-column-two-thirds {
+        order: 2;
+    }
+
+    /* A native <select> pins its dropdown arrow to the right edge and
+       ignores padding-right, so to give the arrow breathing room we hide
+       the native arrow (appearance: none) and draw our own chevron as a
+       background image, insetting it from the edge with background-position. */
+    .govuk-select.govuk-\!-width-full {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        padding-right: 40px;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='17' height='17' viewBox='0 0 17 17'%3E%3Cpath fill='none' stroke='%230b0c0c' stroke-width='2.5' d='M2 5l6.5 6.5L15 5'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+    }
+
+    /* .govuk-button-group sets display: flex, which overrides the browser
+       default [hidden] { display: none }, so the remove button stays visible.
+       Re-assert it here so hiding the group actually works. */
+    .app-action-point__remove[hidden] {
+        display: none;
+    }
+
+    /* Keep empty date fields visually blank instead of showing locale
+       placeholder text (for example dd/mm/yyyy). */
+    input[type="date"]:not(.app-date-has-value):not(:focus)::-webkit-datetime-edit {
+      color: transparent;
+    }
+
+    input[type="date"]:focus::-webkit-datetime-edit,
+    input[type="date"].app-date-has-value::-webkit-datetime-edit {
+      color: inherit;
+    }
+
+  </style>
+
+<div class="app-autosave-status">
+  <div>
+    <p class="govuk-heading-s govuk-!-margin-bottom-0">{{ caseName }}</p>
+    <p class="govuk-body-s govuk-!-margin-bottom-0">{{ caseReference }}</p>
+  </div>
+  <p class="govuk-body-s govuk-!-margin-bottom-0"> <span class="js-autosave-time"></span></p>
+</div>
+
+<a href="cap-home-1.html" class="govuk-back-link">Back</a>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-xl" id="action-plan-heading">Action plan 1</h1>
+
+
+    <form id="action-point-form" novalidate>
+      <div id="error-summary-container"></div>
+      <div class="govuk-form-group" id="due-date-form-group">
+        <label class="govuk-heading-m" for="due-date">
+         Due date
+        </label>
+        <div id="due-date-hint" class="govuk-hint">
+          For example, 17/5/2024.
+        </div>
+        <span class="govuk-error-message" id="due-date-error" style="display:none"></span>
+        <input class="govuk-input" id="due-date" name="due-date" type="date" aria-describedby="due-date-hint due-date-error" value="">
+      </div>
+
+      <div class="govuk-button-group">
+        <a href="#" class="govuk-link govuk-link--no-visited-state" onclick="setDueDate(0); return false;">Today</a>
+        <a href="#" class="govuk-link govuk-link--no-visited-state" onclick="setDueDate(1); return false;">+1 day</a>
+        <a href="#" class="govuk-link govuk-link--no-visited-state" onclick="setDueDate(7); return false;">+7 day</a>
+        <a href="#" class="govuk-link govuk-link--no-visited-state" onclick="setDueDate(14); return false;">+14 day</a>
+        <a href="#" class="govuk-link govuk-link--no-visited-state" onclick="setDueDate(28); return false;">+28 day</a>
+      </div>
+
+
+      <div class="govuk-form-group" id="chaser-date-form-group">
+        <label class="govuk-heading-m" for="chaser-date">
+          Reminder(optional)
+        </label>
+        <div id="chaser-date-hint" class="govuk-hint">
+          For example, 24/5/2024.
+        </div>
+        <input class="govuk-input" id="chaser-date" name="chaser-date" type="date" aria-describedby="chaser-date-hint" value="">
+      </div>
+
+      <div class="govuk-button-group">
+        <a href="#" class="govuk-link govuk-link--no-visited-state" onclick="setChaserDate(-1); return false;">1 day before date required</a>
+      </div>
+
+<hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+
+    <div id="action-points">
+
+      <div class="action-point">
+        <h2 class="govuk-heading-l app-action-point__heading">Action point 1</h2>
+
+        <div class="govuk-form-group" id="suspect-1-form-group">
+          <label class="govuk-heading-m" for="suspect-1">
+            Related to suspects
+          </label>
+          <span class="govuk-error-message" id="suspect-1-error" style="display:none"></span>
+          <select class="govuk-select govuk-!-width-full" id="suspect-1" name="suspect-1">
+            <option value="">Select a suspect</option>
+            <option value="All">All</option>
+            <option value="Howard Wolowitz">Howard Wolowitz</option>
+            <option value="Sheldon Cooper">Sheldon Cooper</option>
+            <option value="Leonard Hofstadter">Leonard Hofstadter</option>
+            <option value="Raj Koothrappali">Raj Koothrappali</option>
+          </select>
+        </div>
+
+        <div class="govuk-form-group" id="action-1-form-group">
+          <label class="govuk-heading-m" for="action-1">
+            Action
+          </label>
+          <span class="govuk-error-message" id="action-1-error" style="display:none"></span>
+           <!-- Witnesses and victims -->
+          <select class="govuk-select govuk-!-width-full" id="action-1" name="action-1">
+            <option value="">Select an action</option>
+            <option value="Key witness details">Key witness details</option>
+            <option value="Key witness statements">Key witness statements</option>
+            <option value="Non-key witness statements">Non-key witness statements</option>
+            <option value="Additional non-key witness statements">Additional non-key witness statements</option>
+            <option value="Witness availability">Witness availability</option>
+            <option value="Victim Personal Statement (VPS)">Victim Personal Statement (VPS)</option>
+            <option value="Previous convictions for all prosecution witnesses">Previous convictions for all prosecution witnesses</option>
+            <option value="Special measures material">Special measures material</option>
+            <option value="Compensation details">Compensation details</option>
+            <!-- Exhibits and evidence -->
+            <option value="Key exhibits">Key exhibits</option>
+            <option value="Forensic evidence">Forensic evidence</option>
+            <option value="Identification evidence">Identification evidence</option>
+            <option value="Medical evidence">Medical evidence</option>
+            <option value="CCTV material">CCTV material</option>
+            <option value="Visually recorded evidence">Visually recorded evidence</option>
+            <option value="Initial drugs assessment">Initial drugs assessment</option>
+            <option value="Unused or sensitive material">Unused or sensitive material</option>
+            <!-- Suspect -->
+            <option value="Record of taped interview (ROTI)">Record of taped interview (ROTI)</option>
+            <option value="Bad character/Dangerous offender information">Bad character/Dangerous offender information</option>
+            <option value="Orders on conviction">Orders on conviction</option>
+            <option value="Proceeds of Crime Act (POCA) review">Proceeds of Crime Act (POCA) review</option>
+            <!-- Other -->
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div class="govuk-form-group" id="description-1-form-group">
+          <label class="govuk-label govuk-label--m" for="description-1">
+            Discription of action
+          </label>
+          <span class="govuk-error-message" id="description-1-error" style="display:none"></span>
+          <textarea class="govuk-textarea" id="description-1" name="description-1" rows="5"></textarea>
+        </div>
+
+        <div class="govuk-button-group app-action-point__remove" hidden>
+          <button type="button" class="govuk-button govuk-button--secondary app-action-point__remove-button" data-module="govuk-button">
+            Remove action point 1
+          </button>
+        </div>
+
+        <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+      </div>
+    </div>
+
+    <button type="button" id="add-another-action-point" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+      Add another action point
+    </button>
+
+         <div class="govuk-button-group">
+  <button type="submit" class="govuk-button" data-module="govuk-button">
+    Save and exit
+  </button>
+  <a class="govuk-link" href="cap-home-1.html">Cancel</a>
+</div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  // Set the page heading to the number this action plan will be. When editing
+  // an existing plan the number comes from the URL hash (#plan=<index>);
+  // otherwise it's the next plan after the ones already saved.
+  (function () {
+    var sentPlansCount = 2;
+    var heading = document.getElementById('action-plan-heading');
+    if (!heading) return;
+
+    var existing = [];
+    try {
+      existing = JSON.parse(localStorage.getItem('actionPointData') || '[]');
+      if (!Array.isArray(existing)) existing = [];
+    } catch (e) {
+      existing = [];
+    }
+
+    var params = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+    var planParam = params.get('plan');
+    var number = planParam !== null
+      ? Number(planParam) + sentPlansCount + 1
+      : existing.length + sentPlansCount + 1;
+
+    heading.textContent = 'Action plan ' + number;
+  })();
+
+  (function () {
+    var container = document.getElementById('action-points');
+    var addButton = document.getElementById('add-another-action-point');
+    if (!container || !addButton) return;
+
+    // Renumber every action point's heading + remove button, and only show
+    // the remove buttons when there is more than one action point.
+    function refresh() {
+      var points = container.querySelectorAll('.action-point');
+      var showRemove = points.length > 1;
+
+      points.forEach(function (point, index) {
+        var number = index + 1;
+
+        var heading = point.querySelector('.app-action-point__heading');
+        if (heading) heading.textContent = 'Action point ' + number;
+
+        var removeGroup = point.querySelector('.app-action-point__remove');
+        var removeButton = point.querySelector('.app-action-point__remove-button');
+        if (removeButton) removeButton.textContent = 'Remove action point ' + number;
+        if (removeGroup) removeGroup.hidden = !showRemove;
+
+        // Keep field ids/names/labels unique and in sync with the number.
+        point.querySelectorAll('select, textarea, input').forEach(function (field) {
+          var newId = field.id.replace(/\d+$/, number);
+          var label = point.querySelector('label[for="' + field.id + '"]');
+          field.id = newId;
+          if (field.name) field.name = field.name.replace(/\d+$/, number);
+          if (label) label.setAttribute('for', newId);
+        });
+
+        var suspectGroup = point.querySelector('.govuk-form-group[id^="suspect-"][id$="-form-group"]');
+        var suspectError = point.querySelector('.govuk-error-message[id^="suspect-"][id$="-error"]');
+        if (suspectGroup) suspectGroup.id = 'suspect-' + number + '-form-group';
+        if (suspectError) suspectError.id = 'suspect-' + number + '-error';
+
+        var actionGroup = point.querySelector('.govuk-form-group[id^="action-"][id$="-form-group"]');
+        var actionError = point.querySelector('.govuk-error-message[id^="action-"][id$="-error"]');
+        if (actionGroup) actionGroup.id = 'action-' + number + '-form-group';
+        if (actionError) actionError.id = 'action-' + number + '-error';
+
+        var descriptionGroup = point.querySelector('.govuk-form-group[id^="description-"][id$="-form-group"]');
+        var descriptionError = point.querySelector('.govuk-error-message[id^="description-"][id$="-error"]');
+        if (descriptionGroup) descriptionGroup.id = 'description-' + number + '-form-group';
+        if (descriptionError) descriptionError.id = 'description-' + number + '-error';
+      });
+    }
+
+    addButton.addEventListener('click', function () {
+      var points = container.querySelectorAll('.action-point');
+      var newPoint = points[0].cloneNode(true);
+
+      // Reset the cloned block's values.
+      newPoint.querySelectorAll('select, textarea, input').forEach(function (field) {
+        if (field.tagName === 'TEXTAREA') {
+          field.value = '';
+        } else if (field.tagName === 'SELECT') {
+          field.selectedIndex = 0;
+        }
+      });
+
+      newPoint.querySelectorAll('.govuk-form-group').forEach(function (group) {
+        group.classList.remove('govuk-form-group--error');
+      });
+      newPoint.querySelectorAll('.govuk-error-message').forEach(function (msg) {
+        msg.textContent = '';
+        msg.style.display = 'none';
+      });
+
+      container.appendChild(newPoint);
+      refresh();
+
+      var firstField = newPoint.querySelector('select, textarea, input');
+      if (firstField) firstField.focus();
+    });
+
+    // Delegate the remove buttons so cloned ones work too.
+    container.addEventListener('click', function (event) {
+      var button = event.target.closest('.app-action-point__remove-button');
+      if (!button) return;
+      var point = button.closest('.action-point');
+      if (point) point.remove();
+      refresh();
+    });
+
+    // Set the correct initial state (hides the remove button when there is
+    // only one action point).
+    refresh();
+  })();
+
+  // When editing an existing plan (#plan=<index>), prefill the form with the
+  // previously entered values so the user can update them in place.
+  (function () {
+    var params = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+    var planParam = params.get('plan');
+    if (planParam === null) return;
+
+    var plans = [];
+    try {
+      plans = JSON.parse(localStorage.getItem('actionPointData') || '[]');
+      if (!Array.isArray(plans)) plans = [];
+    } catch (e) {
+      plans = [];
+    }
+
+    var plan = plans[Number(planParam)];
+    if (!plan) return;
+
+    // Plan-level dates.
+    if (plan.dueDate) document.getElementById('due-date').value = plan.dueDate;
+    if (plan.chaserDate) document.getElementById('chaser-date').value = plan.chaserDate;
+
+    var points = Array.isArray(plan.actionPoints) ? plan.actionPoints : [];
+    var container = document.getElementById('action-points');
+    var addButton = document.getElementById('add-another-action-point');
+
+    // Create enough action point blocks to match the saved data.
+    while (container.querySelectorAll('.action-point').length < points.length) {
+      addButton.click();
+    }
+
+    // Fill each block from the saved action point.
+    container.querySelectorAll('.action-point').forEach(function (block, i) {
+      var point = points[i];
+      if (!point) return;
+      var suspect = block.querySelector('select[id^="suspect-"]');
+      var action = block.querySelector('select[id^="action-"]');
+      var description = block.querySelector('textarea[id^="description-"]');
+      if (suspect && point.suspect) suspect.value = point.suspect;
+      if (action && point.action) action.value = point.action;
+      if (description) description.value = point.description || '';
+    });
+  })();
+
+  function setDueDate(days) {
+    const date = new Date();
+    date.setDate(date.getDate() + days);
+    const formattedDate = date.toISOString().split('T')[0];
+    document.getElementById('due-date').value = formattedDate;
+    updateDateFieldVisualState();
+  }
+
+  function setChaserDate(days) {
+    const dueDate = document.getElementById('due-date').value;
+    if (!dueDate) {
+      alert('Please set a due date first');
+      return;
+    }
+    const date = new Date(dueDate);
+    date.setDate(date.getDate() + days);
+    const formattedDate = date.toISOString().split('T')[0];
+    document.getElementById('chaser-date').value = formattedDate;
+    updateDateFieldVisualState();
+  }
+
+  function updateDateFieldVisualState() {
+    ['due-date', 'chaser-date'].forEach(function (id) {
+      var field = document.getElementById(id);
+      if (!field) return;
+      field.classList.toggle('app-date-has-value', Boolean(field.value));
+    });
+  }
+
+  ['due-date', 'chaser-date'].forEach(function (id) {
+    var field = document.getElementById(id);
+    if (!field) return;
+    field.addEventListener('input', updateDateFieldVisualState);
+    field.addEventListener('change', updateDateFieldVisualState);
+  });
+
+  updateDateFieldVisualState();
+
+  function getCheckedValues(name) {
+    return Array.from(document.querySelectorAll('input[name="' + name + '"]:checked')).map(function (input) {
+      const detailId = input.id + '-detail';
+      const detail = document.getElementById(detailId);
+      let value = input.value;
+      if (detail && detail.value.trim()) {
+        value += ': ' + detail.value.trim();
+      }
+      return value;
+    });
+  }
+
+  document.getElementById('action-point-form').addEventListener('submit', function (event) {
+    event.preventDefault();
+
+    // Clear previous errors
+    document.getElementById('error-summary-container').innerHTML = '';
+    document.querySelectorAll('.govuk-form-group').forEach(function (group) {
+      group.classList.remove('govuk-form-group--error');
+    });
+    document.querySelectorAll('.govuk-error-message').forEach(function (msg) {
+      msg.style.display = 'none';
+      msg.textContent = '';
+    });
+
+    var errors = [];
+
+    // Validate due date
+    var dueDate = document.getElementById('due-date');
+    if (!dueDate.value) {
+      errors.push({
+        field: 'due-date',
+        message: 'Enter a due date'
+      });
+      var group = document.getElementById('due-date-form-group');
+      group.classList.add('govuk-form-group--error');
+      var err = document.getElementById('due-date-error');
+      err.textContent = 'Enter a due date';
+      err.style.display = '';
+    }
+
+    // Validate each action point
+    var actionPointBlocks = document.querySelectorAll('#action-points .action-point');
+    actionPointBlocks.forEach(function (block, i) {
+      var suspect = block.querySelector('select[id^="suspect-"]');
+      var action = block.querySelector('select[id^="action-"]');
+      var description = block.querySelector('textarea[id^="description-"]');
+      var idx = i + 1;
+
+      if (!suspect.value) {
+        errors.push({
+          field: 'suspect-' + idx,
+          message: 'Select a suspect for action point ' + idx
+        });
+        var group = suspect.closest('.govuk-form-group');
+        if (group) group.classList.add('govuk-form-group--error');
+        var err = group ? group.querySelector('.govuk-error-message') : null;
+        if (err) {
+          err.textContent = 'Select a suspect';
+          err.style.display = '';
+        }
+      }
+      if (!action.value) {
+        errors.push({
+          field: 'action-' + idx,
+          message: 'Select an action for action point ' + idx
+        });
+        var group = action.closest('.govuk-form-group');
+        if (group) group.classList.add('govuk-form-group--error');
+        var err = group ? group.querySelector('.govuk-error-message') : null;
+        if (err) {
+          err.textContent = 'Select an action';
+          err.style.display = '';
+        }
+      }
+      if (!description.value.trim()) {
+        errors.push({
+          field: 'description-' + idx,
+          message: 'Enter a description for action point ' + idx
+        });
+        var group = description.closest('.govuk-form-group');
+        if (group) group.classList.add('govuk-form-group--error');
+        var err = group ? group.querySelector('.govuk-error-message') : null;
+        if (err) {
+          err.textContent = 'Enter a description';
+          err.style.display = '';
+        }
+      }
+    });
+
+    if (errors.length > 0) {
+      // Show error summary
+      var summaryHtml = '<div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">';
+      summaryHtml += '<h2 class="govuk-error-summary__title" id="error-summary-title">There is a problem</h2>';
+      summaryHtml += '<div class="govuk-error-summary__body"><ul class="govuk-list govuk-error-summary__list">';
+      errors.forEach(function (err) {
+        summaryHtml += '<li><a href="#' + err.field + '">' + err.message + '</a></li>';
+      });
+      summaryHtml += '</ul></div></div>';
+      document.getElementById('error-summary-container').innerHTML = summaryHtml;
+      var errorSummary = document.querySelector('.govuk-error-summary');
+      if (errorSummary) errorSummary.focus();
+      return;
+    }
+
+    // No errors, continue as before
+    let existing = [];
+    try {
+      const storedData = localStorage.getItem('actionPointData');
+      if (storedData && storedData !== 'undefined') {
+        existing = JSON.parse(storedData);
+        if (!Array.isArray(existing)) {
+          existing = [];
+        }
+      }
+    } catch (e) {
+      console.error('Error parsing localStorage:', e);
+      existing = [];
+    }
+
+    // Gather each action point block into a structured list.
+    const actionPoints = Array.from(document.querySelectorAll('#action-points .action-point')).map(function (point) {
+      const suspect = point.querySelector('select[id^="suspect-"]');
+      const action = point.querySelector('select[id^="action-"]');
+      const description = point.querySelector('textarea[id^="description-"]');
+      return {
+        suspect: suspect ? suspect.value : '',
+        action: action ? action.value : '',
+        description: description ? description.value : ''
+      };
+    });
+
+    const newItem = {
+      dueDate: document.getElementById('due-date').value,
+      chaserDate: document.getElementById('chaser-date').value,
+      actionPoints: actionPoints
+    };
+
+    // If we arrived with #plan=<index> we're editing an existing plan, so
+    // overwrite it in place. Otherwise add a new plan to the end.
+    var editParams = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+    var editPlan = editParams.get('plan');
+    var editPoint = editParams.get('point');
+    if (editPlan !== null && existing[Number(editPlan)]) {
+      existing[Number(editPlan)] = newItem;
+    } else {
+      existing.push(newItem);
+    }
+
+    localStorage.setItem('actionPointData', JSON.stringify(existing));
+
+    // Return the user to where they came from: if editing a specific action
+    // point, go back to that action point; otherwise back to the plans list.
+    if (editPlan !== null && editPoint !== null) {
+      window.location.href = 'action-point-open.html#plan=' + editPlan + '&point=' + editPoint;
+    } else {
+      window.location.href = 'cap-home-1.html';
+    }
+  });
+</script>
+{% endblock %}

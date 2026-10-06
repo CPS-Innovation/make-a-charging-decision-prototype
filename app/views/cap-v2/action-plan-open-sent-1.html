@@ -1,0 +1,201 @@
+{% extends "layouts/main.html" %}
+
+{% block header %}{% endblock %}
+{% block footer %}{% endblock %}
+
+{% block pageTitle %}
+  GOV.UK page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% set caseName = "COOPER, Sheldon and 4 Others" %}
+{% set caseReference = "45AA209820/1" %}
+
+{% block content %}
+  <style>
+    .govuk-main-wrapper {
+      max-width: 1200px;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+
+    .govuk-width-container {
+      max-width: 1200px;
+    }
+
+    .app-autosave-status {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-bottom: 1px solid #b1b4b6;
+      padding-bottom: 15px;
+      margin-bottom: 40px;
+    }
+
+    .app-action-point-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+  </style>
+
+  <div class="app-autosave-status">
+    <div>
+      <p class="govuk-heading-s govuk-!-margin-bottom-0">{{ caseName }}</p>
+      <p class="govuk-body-s govuk-!-margin-bottom-0">{{ caseReference }}</p>
+    </div>
+    <p class="govuk-body-s govuk-!-margin-bottom-0"> <span class="js-autosave-time"></span></p>
+  </div>
+
+  <a href="cap-home-1.html" class="govuk-back-link">Back</a>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl" id="action-plan-heading">Action plan</h1>
+
+      <dl class="govuk-summary-list govuk-summary-list--no-border" id="action-plan-summary"></dl>
+
+      <a id="edit-action-plan-button" href="add-action-point-1.html" class="govuk-button" role="button" draggable="false" data-module="govuk-button">
+        Edit action plan
+      </a>
+
+      <h2 class="govuk-heading-l">Action points</h2>
+      <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+      <div id="action-points"></div>
+    </div>
+  </div>
+
+  <script>
+    function formatGdsDate(value) {
+      if (!value) return 'Not provided';
+      const date = new Date(value + 'T12:00:00');
+      if (Number.isNaN(date.getTime())) return value;
+      return new Intl.DateTimeFormat('en-GB', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      }).format(date);
+    }
+
+    function summaryRow(key, value) {
+      return '<div class="govuk-summary-list__row">' +
+        '<dt class="govuk-summary-list__key">' + key + '</dt>' +
+        '<dd class="govuk-summary-list__value">' + value + '</dd>' +
+        '</div>';
+    }
+
+    const sampleSentPlan = {
+      dueDate: '2026-09-30',
+      chaserDate: '2026-10-14',
+      actionPoints: [
+        { suspect: 'Sheldon Cooper', action: 'Request safeguarding update', description: 'Contact local safeguarding team and request an updated written position on current risk indicators and active controls in place.' },
+        { suspect: 'Howard Wolowitz', action: 'Obtain witness chronology', description: 'Request full witness chronology from the investigating officer and confirm date and source references for each timeline entry.' },
+        { suspect: 'Leonard Hofstadter', action: 'Review disclosure schedule', description: 'Check disclosure schedule for completeness, identify missing exhibit references, and escalate any material inconsistencies to casework lead.' },
+        { suspect: 'Raj Koothrappali', action: 'Confirm digital evidence status', description: 'Verify that extraction reports have been received, indexed, and quality checked before inclusion in the review bundle.' },
+        { suspect: 'All', action: 'Update victim contact log', description: 'Ensure all victim communication attempts are accurately recorded, including time, method, and caseworker outcome notes.' },
+        { suspect: 'Sheldon Cooper', action: 'Chase medical evidence', description: 'Follow up outstanding medical evidence request and confirm expected receipt date with provider administration team.' },
+        { suspect: 'Howard Wolowitz', action: 'Validate address history', description: 'Cross-check suspect address history across police systems and document any period where residency cannot be confirmed.' },
+        { suspect: 'Leonard Hofstadter', action: 'Prepare charging advice draft', description: 'Draft charging advice summary aligned to evidential test and public interest factors for legal manager review.' },
+        { suspect: 'Raj Koothrappali', action: 'Confirm interpreter requirement', description: 'Confirm language support requirement for all planned hearings and update booking notes for listing team coordination.' },
+        { suspect: 'All', action: 'Submit final review pack', description: 'Assemble final review documentation and submit complete pack to the relevant authority before the due date deadline.' }
+      ]
+    };
+
+    function descriptionWithShowMore(value, idSuffix) {
+      if (!value || !value.trim()) return 'Not provided';
+
+      const words = value.trim().split(/\s+/);
+      if (words.length <= 12) return value;
+
+      const preview = words.slice(0, 12).join(' ');
+      const remainder = words.slice(12).join(' ');
+      const remainderId = 'description-remainder-' + idSuffix;
+      const showMoreId = 'description-show-more-' + idSuffix;
+      const showLessId = 'description-show-less-' + idSuffix;
+
+      return preview +
+        ' <span id="' + remainderId + '" hidden> ' + remainder + '</span>' +
+        ' <a href="#" id="' + showMoreId + '" class="govuk-link govuk-link--no-visited-state js-description-show-more" data-target="' + remainderId + '" data-less-link="' + showLessId + '">View more</a>' +
+        ' <a href="#" id="' + showLessId + '" class="govuk-link govuk-link--no-visited-state js-description-show-less" data-target="' + remainderId + '" data-more-link="' + showMoreId + '" hidden>Show less</a>';
+    }
+
+    function render() {
+      const heading = document.getElementById('action-plan-heading');
+      const summary = document.getElementById('action-plan-summary');
+      const pointsTarget = document.getElementById('action-points');
+
+      heading.textContent = 'Action plan 1';
+
+      const editButton = document.getElementById('edit-action-plan-button');
+      if (editButton) editButton.hidden = true;
+
+      summary.innerHTML =
+        summaryRow('Sent by', 'S. Ahmed') +
+        summaryRow('Date sent', '2 September 2026') +
+        summaryRow('Officer in charge', 'D. Thompson') +
+        summaryRow('Due date', formatGdsDate(sampleSentPlan.dueDate)) +
+        summaryRow('Chaser task date', formatGdsDate(sampleSentPlan.chaserDate));
+
+      const points = Array.isArray(sampleSentPlan.actionPoints) ? sampleSentPlan.actionPoints : [];
+
+      if (!points.length) {
+        pointsTarget.innerHTML = '';
+        return;
+      }
+
+      pointsTarget.innerHTML = points.map(function (point, i) {
+        const descriptionValue = descriptionWithShowMore(point.description, 'sent-1-' + i);
+
+        return '' +
+          (i > 0 ? '<hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">' : '') +
+          '<div class="app-action-point-header">' +
+            '<h2 class="govuk-heading-m govuk-!-margin-bottom-0">' +
+              '<a class="govuk-link govuk-link--no-visited-state" href="action-point-open.html#sent-plan=1&point=' + i + '">Action point ' + (i + 1) + '</a>' +
+            '</h2>' +
+            '<span class="govuk-tag govuk-tag--blue">Sent</span>' +
+          '</div>' +
+          '<dl class="govuk-summary-list govuk-summary-list--no-border">' +
+            summaryRow('Related to suspects', point.suspect || 'Not provided') +
+            summaryRow('Action', point.action || 'Not provided') +
+            summaryRow('Description of action', descriptionValue) +
+          '</dl>';
+      }).join('') +
+        '<hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">';
+    }
+
+    document.addEventListener('click', function (event) {
+      const showMoreLink = event.target.closest('.js-description-show-more');
+      if (showMoreLink) {
+        event.preventDefault();
+        const targetId = showMoreLink.getAttribute('data-target');
+        const lessLinkId = showMoreLink.getAttribute('data-less-link');
+        const remainder = document.getElementById(targetId);
+        const showLessLink = document.getElementById(lessLinkId);
+        if (!remainder) return;
+
+        remainder.hidden = false;
+        showMoreLink.hidden = true;
+        if (showLessLink) showLessLink.hidden = false;
+        return;
+      }
+
+      const showLessLink = event.target.closest('.js-description-show-less');
+      if (!showLessLink) return;
+
+      event.preventDefault();
+      const targetId = showLessLink.getAttribute('data-target');
+      const moreLinkId = showLessLink.getAttribute('data-more-link');
+      const remainder = document.getElementById(targetId);
+      const showMoreLinkAgain = document.getElementById(moreLinkId);
+      if (!remainder) return;
+
+      remainder.hidden = true;
+      showLessLink.hidden = true;
+      if (showMoreLinkAgain) showMoreLinkAgain.hidden = false;
+    });
+
+    render();
+  </script>
+{% endblock %}

@@ -1,0 +1,369 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  GOV.UK page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% set caseName = "McLOVE, Eoin and 4 Others" %}
+{% set caseReference = "45AA209820/1" %}
+
+{% block content %}
+  <script>
+    (function () {
+      if (window.self === window.top) return;
+
+      function stripChrome() {
+        var header = document.querySelector('.govuk-header');
+        var serviceNav = document.querySelector('.govuk-service-navigation');
+        var footer = document.querySelector('.govuk-footer');
+
+        if (header) header.remove();
+        if (serviceNav) serviceNav.remove();
+        if (footer) footer.remove();
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', stripChrome);
+      } else {
+        stripChrome();
+      }
+    })();
+  </script>
+
+  <style>
+    .app-step-nav__button,
+    .app-step-nav__header.js-toggle-panel {
+      display: none !important;
+    }
+
+    .app-step-nav__panel {
+      display: block !important;
+    }
+
+    .step-content {
+      margin-top: 0.75rem;
+    }
+
+    .step-content[hidden] {
+      display: none;
+    }
+
+    .app-step-nav__step {
+      display: block;
+      margin-bottom: 1rem;
+    }
+
+    .step-inline-link,
+    .step-inline-link:visited,
+    .step-inline-link:hover,
+    .step-inline-link:active,
+    .step-inline-link:focus {
+      color: #0b0c0c;
+      text-decoration: none;
+    }
+
+    .step-inline-link:hover,
+    .step-inline-link:focus {
+      color: #1d70b8;
+      text-decoration: underline;
+    }
+
+    #step-toggle-link {
+      display: inline-block;
+      margin-bottom: 1rem;
+      color: #1d70b8;
+      text-decoration: underline;
+      line-height: 1.25;
+      font-size: 19px;
+    }
+
+    #step-toggle-link:hover,
+    #step-toggle-link:focus,
+    #step-toggle-link:active {
+      color: #003078;
+      text-decoration-thickness: 3px;
+      text-underline-offset: 0.1em;
+    }
+
+    #step-toggle-link:visited {
+      color: #4c2c92;
+    }
+
+    .js-step-title,
+    .js-step-title:link,
+    .js-step-title:visited,
+    .js-step-title:active,
+    .js-step-title:focus {
+      color: #0b0c0c;
+      text-decoration: none;
+    }
+
+    .js-step-title:hover,
+    .js-step-title:focus {
+      color: #1d70b8;
+      text-decoration: underline;
+    }
+
+    /* The shared layout (includes/wide.html) sets the page width to 1400px,
+       but the real CPS site this page is modelled on is 1200px wide. Since
+       that shared file affects every other page using this layout, the
+       narrower width is overridden here instead, scoped to this page only. */
+    .govuk-main-wrapper {
+        max-width: 1200px;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+
+    .govuk-width-container {
+        max-width: 1200px;
+    }
+
+    .app-autosave-status {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-bottom: 1px solid #b1b4b6;
+      padding-bottom: 15px;
+      margin-bottom: 40px;
+    }
+
+    /* Rich-text answer box. GOV.UK Frontend has no rich-text-editor
+       component, so this is a bespoke pattern carried over from the witex
+       prototype's L-case-review-html-3.html - a contenteditable area with
+       an execCommand toolbar, and a character count styled to match the
+       real govukCharacterCount message. */
+    .app-answer-editor {
+        border: 2px solid #0b0c0c;
+    }
+
+    .app-answer-editor__toolbar {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+        padding: 5px;
+        background: #f3f2f1;
+    }
+
+    .app-answer-editor__toolbar button {
+        font-family: inherit;
+        font-size: 19px;
+        line-height: 1;
+        min-width: 40px;
+        padding: 10px;
+        background: none;
+        border: 0;
+        cursor: pointer;
+    }
+
+    .app-answer-editor__toolbar button:hover {
+        background: #e0e0e0;
+    }
+
+    .app-answer-editor__toolbar button:focus {
+        outline: 3px solid transparent;
+        background: #ffdd00;
+        box-shadow: 0 2px 0 #0b0c0c;
+    }
+
+    .app-answer-editor__body {
+        min-height: 300px;
+        padding: 15px;
+        outline: none;
+    }
+
+    .app-answer-editor__body:focus {
+        outline: 3px solid #ffdd00;
+        outline-offset: 0;
+        box-shadow: inset 0 0 0 2px;
+    }
+
+    /* Keeps the page's <h1> as the first heading in the DOM (the nav's own
+       h2/h3 step titles come after it) while still showing the nav visually
+       on the left - see accessibility heading-order rule in ai-context.md */
+    .app-case-headline-row {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .app-case-headline-row .govuk-grid-column-one-third {
+        order: 1;
+    }
+
+    .app-case-headline-row .govuk-grid-column-two-thirds {
+        order: 2;
+    }
+
+    /* The action plans section sits below the "Add action plan" button. */
+    #action-plans-to-send {
+        margin-top: 40px;
+    }
+
+    #sent-action-plans-heading {
+      padding-top: 40px;
+    }
+
+    /* A <button> styled to look like a govuk-link, so the "Delete" action in
+       the summary list is a real button (it performs an action) but reads as
+       a link, matching the GDS summary list actions pattern. */
+    .app-link-button {
+        background: none;
+        border: 0;
+        padding: 0;
+        margin: 0;
+        font-family: inherit;
+        font-size: inherit;
+        color: #1d70b8;
+        text-decoration: underline;
+        cursor: pointer;
+    }
+
+    .app-link-button:hover {
+        color: #003078;
+    }
+
+    .app-link-button:focus {
+        outline: 3px solid transparent;
+        color: #0b0c0c;
+        background-color: #ffdd00;
+        box-shadow: 0 -2px #ffdd00, 0 4px #0b0c0c;
+        text-decoration: none;
+    }
+
+  </style>
+
+  <div class="app-autosave-status">
+    <div>
+      <p class="govuk-heading-s govuk-!-margin-bottom-0">{{ caseName }}</p>
+      <p class="govuk-body-s govuk-!-margin-bottom-0">{{ caseReference }}</p>
+    </div>
+    <p class="govuk-body-s govuk-!-margin-bottom-0"> <span class="js-autosave-time"></span></p>
+  </div>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl">Case action plans</h1>
+
+      <p class="govuk-body">
+        Manage or create a case action plan to send to the relevant authorities. You can add, change and delete action points before you submit this review.
+      </p>
+
+      <a id="add-action-point-button" class="govuk-button" href="add-action-point-1.html" role="button" draggable="false" data-module="govuk-button" onclick="sessionStorage.setItem('actionPlansStarted', 'true');">
+        Add action plan
+      </a>
+
+      <section id="action-plans-to-send" hidden>
+        <h2 class="govuk-heading-l">Action plans to be sent with next review</h2>
+        <div id="action-points-content"></div>
+      </section>
+    </div>
+  </div>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <section aria-labelledby="sent-action-plans-heading">
+        <h2 id="sent-action-plans-heading" class="govuk-heading-l">Sent action plans</h2>
+
+        <h3 class="govuk-heading-m">
+          <a class="govuk-link govuk-link--no-visited-state" href="action-plan-open-sent-1.html">Action plan 1</a>
+        </h3>
+        <dl class="govuk-summary-list govuk-summary-list--no-border">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Date sent</dt>
+            <dd class="govuk-summary-list__value">2 September 2026</dd>
+          </div>
+        </dl>
+
+        <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+        <h3 class="govuk-heading-m">
+          <a class="govuk-link govuk-link--no-visited-state" href="action-plan-open-sent-2.html">Action plan 2</a>
+        </h3>
+        <dl class="govuk-summary-list govuk-summary-list--no-border">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Date sent</dt>
+            <dd class="govuk-summary-list__value">18 September 2026</dd>
+          </div>
+        </dl>
+
+        <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+      </section>
+    </div>
+  </div>
+
+  <script>
+    function getActionPoints() {
+      try {
+        return JSON.parse(localStorage.getItem('actionPointData') || '[]');
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveActionPoints(list) {
+      localStorage.setItem('actionPointData', JSON.stringify(list));
+    }
+
+    function formatGdsDate(value) {
+      if (!value) return 'Not provided';
+      const date = new Date(value + 'T12:00:00');
+      if (Number.isNaN(date.getTime())) return value;
+      return new Intl.DateTimeFormat('en-GB', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      }).format(date);
+    }
+
+    function renderSavedData() {
+      const sentPlansCount = 2;
+      const items = getActionPoints();
+      const section = document.getElementById('action-plans-to-send');
+      const target = document.getElementById('action-points-content');
+      const addButton = document.getElementById('add-action-point-button');
+
+      if (!items.length) {
+        section.hidden = true;
+        target.innerHTML = '';
+        addButton.textContent = 'Add action plan';
+        return;
+      }
+
+      section.hidden = false;
+      addButton.textContent = 'Add another action plan';
+
+      const html = items.map(function (item, index) {
+        const rows = [
+          { key: 'Due date', value: formatGdsDate(item.dueDate) },
+          { key: 'Chaser task date', value: formatGdsDate(item.chaserDate) }
+        ];
+
+        return '' +
+          (index > 0 ? '<hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">' : '') +
+          '<h3 class="govuk-heading-m">' +
+            '<a class="govuk-link govuk-link--no-visited-state" href="action-plan-open.html#plan=' + index + '">Action plan ' + (sentPlansCount + index + 1) + '</a>' +
+          '</h3>' +
+          '<dl class="govuk-summary-list govuk-summary-list--no-border">' +
+            rows.map(function (row) {
+              return '<div class="govuk-summary-list__row">' +
+                '<dt class="govuk-summary-list__key">' + row.key + '</dt>' +
+                '<dd class="govuk-summary-list__value">' + row.value + '</dd>' +
+                '</div>';
+            }).join('') +
+          '</dl>';
+      }).join('') +
+        '<hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">';
+
+      target.innerHTML = html;
+    }
+
+    // Action plans should only appear once the user has started the add flow
+    // (clicked "Add action plan" / "Add another action plan") in this session.
+    // On a fresh visit where that hasn't happened, clear any leftover plans so
+    // the screen starts empty.
+    if (!sessionStorage.getItem('actionPlansStarted')) {
+      localStorage.removeItem('actionPointData');
+    }
+
+    renderSavedData();
+  </script>
+{% endblock %}

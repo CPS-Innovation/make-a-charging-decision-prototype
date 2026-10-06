@@ -1,0 +1,229 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  GOV.UK page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% set caseName = "COOPER, Sheldon and 4 Others" %}
+{% set caseReference = "45AA209820/1" %}
+
+{% block content %}
+  <style>
+    /* The shared layout sets the page width to 1400px, but the real CPS site
+       this page is modelled on is 1200px wide. Scoped to this page only. */
+    .govuk-main-wrapper {
+        max-width: 1200px;
+    }
+
+    .govuk-width-container {
+        max-width: 1200px;
+    }
+
+    /* Autosave status bar - specific to pages with an answer to save. */
+    .app-autosave-status {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        border-bottom: 1px solid #b1b4b6;
+        padding-bottom: 15px;
+        margin-bottom: 40px;
+    }
+
+    /* Row that sits the page title and its status tag side by side. */
+    .app-action-point-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+  </style>
+
+  <div class="app-autosave-status">
+    <div>
+      <p class="govuk-heading-s govuk-!-margin-bottom-0">{{ caseName }}</p>
+      <p class="govuk-body-s govuk-!-margin-bottom-0">{{ caseReference }}</p>
+    </div>
+    <p class="govuk-body-s govuk-!-margin-bottom-0"> <span class="js-autosave-time"></span></p>
+  </div>
+
+  <a href="#" id="back-link" class="govuk-back-link">Back</a>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <span class="govuk-caption-l" id="action-plan-caption"></span>
+      <div class="app-action-point-header">
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-0" id="action-point-heading">Action point</h1>
+        <span class="govuk-tag govuk-tag--grey" id="action-point-status-tag">Draft</span>
+      </div>
+
+      <dl class="govuk-summary-list govuk-summary-list--no-border govuk-!-margin-bottom-8" id="action-point-summary"></dl>
+
+      <div class="govuk-button-group" id="action-point-actions">
+        <a href="add-action-point-1.html" id="edit-action-point-button" class="govuk-button govuk-button--secondary" role="button" draggable="false" data-module="govuk-button">
+          Change
+        </a>
+        <button type="button" id="delete-action-point-button" class="govuk-button govuk-button--warning" data-module="govuk-button">
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function getActionPoints() {
+      try {
+        return JSON.parse(localStorage.getItem('actionPointData') || '[]');
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function getIndexes() {
+      const params = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+      return {
+        sentPlan: Number(params.get('sent-plan')),
+        plan: Number(params.get('plan')),
+        point: Number(params.get('point'))
+      };
+    }
+
+    const sampleSentPlans = {
+      1: {
+        actionPoints: [
+          { suspect: 'Sheldon Cooper', action: 'Request safeguarding update', description: 'Contact local safeguarding team and request an updated written position on current risk indicators and active controls in place.' },
+          { suspect: 'Howard Wolowitz', action: 'Obtain witness chronology', description: 'Request full witness chronology from the investigating officer and confirm date and source references for each timeline entry.' },
+          { suspect: 'Leonard Hofstadter', action: 'Review disclosure schedule', description: 'Check disclosure schedule for completeness, identify missing exhibit references, and escalate any material inconsistencies to casework lead.' },
+          { suspect: 'Raj Koothrappali', action: 'Confirm digital evidence status', description: 'Verify that extraction reports have been received, indexed, and quality checked before inclusion in the review bundle.' },
+          { suspect: 'All', action: 'Update victim contact log', description: 'Ensure all victim communication attempts are accurately recorded, including time, method, and caseworker outcome notes.' },
+          { suspect: 'Sheldon Cooper', action: 'Chase medical evidence', description: 'Follow up outstanding medical evidence request and confirm expected receipt date with provider administration team.' },
+          { suspect: 'Howard Wolowitz', action: 'Validate address history', description: 'Cross-check suspect address history across police systems and document any period where residency cannot be confirmed.' },
+          { suspect: 'Leonard Hofstadter', action: 'Prepare charging advice draft', description: 'Draft charging advice summary aligned to evidential test and public interest factors for legal manager review.' },
+          { suspect: 'Raj Koothrappali', action: 'Confirm interpreter requirement', description: 'Confirm language support requirement for all planned hearings and update booking notes for listing team coordination.' },
+          { suspect: 'All', action: 'Submit final review pack', description: 'Assemble final review documentation and submit complete pack to the relevant authority before the due date deadline.' }
+        ]
+      },
+      2: {
+        actionPoints: [
+          { suspect: 'Raj Koothrappali', action: 'Confirm bail variation details', description: 'Check whether any bail condition variations were approved and record the effective dates and authorising officer details.' },
+          { suspect: 'Leonard Hofstadter', action: 'Request CCTV continuity statement', description: 'Obtain continuity statement for all CCTV media and confirm each exhibit reference aligns to the current evidence index.' },
+          { suspect: 'Howard Wolowitz', action: 'Review call data schedule', description: 'Review call data schedule to identify unexplained communication gaps and prepare follow-up queries for digital investigations.' },
+          { suspect: 'Sheldon Cooper', action: 'Clarify forensic turnaround time', description: 'Contact forensic provider to confirm expected completion date and document any risk to upcoming review submission dates.' },
+          { suspect: 'All', action: 'Update special measures note', description: 'Reassess special measures requirements and update case note with rationale and supporting information from witness care unit.' },
+          { suspect: 'Raj Koothrappali', action: 'Check previous conviction bundle', description: 'Validate that conviction records are complete and suitable for use in charging advice and sentencing context if required.' },
+          { suspect: 'Leonard Hofstadter', action: 'Complete disclosure quality check', description: 'Perform quality check of redactions, exhibit labels, and disclosure descriptions before release to the defence team.' },
+          { suspect: 'Howard Wolowitz', action: 'Confirm hearing listing status', description: 'Verify hearing listing status with court team and capture date changes in the case timeline and task tracker.' },
+          { suspect: 'Sheldon Cooper', action: 'Follow up financial evidence', description: 'Follow up outstanding financial records request and note whether production order escalation is needed for non-compliance.' },
+          { suspect: 'All', action: 'Issue final case update', description: 'Send final case update to relevant authority summarising completed actions, remaining risks, and next review checkpoint.' }
+        ]
+      }
+    };
+
+    function summaryRow(key, value) {
+      return '<div class="govuk-summary-list__row">' +
+        '<dt class="govuk-summary-list__key">' + key + '</dt>' +
+        '<dd class="govuk-summary-list__value">' + value + '</dd>' +
+        '</div>';
+    }
+
+    function render() {
+      const sentPlansCount = 2;
+      const items = getActionPoints();
+      const indexes = getIndexes();
+      const caption = document.getElementById('action-plan-caption');
+      const heading = document.getElementById('action-point-heading');
+      const summary = document.getElementById('action-point-summary');
+      const editButton = document.getElementById('edit-action-point-button');
+      const deleteButton = document.getElementById('delete-action-point-button');
+      const actionButtons = document.getElementById('action-point-actions');
+      const backLink = document.getElementById('back-link');
+      const statusTag = document.getElementById('action-point-status-tag');
+
+      const isSentPlan = Number.isInteger(indexes.sentPlan) && indexes.sentPlan > 0;
+
+      let planHref = 'action-plan-open.html#plan=' + indexes.plan;
+      let point;
+
+      if (isSentPlan) {
+        const sentPlanData = sampleSentPlans[indexes.sentPlan];
+        planHref = 'action-plan-open-sent-' + indexes.sentPlan + '.html';
+        point = sentPlanData && Array.isArray(sentPlanData.actionPoints)
+          ? sentPlanData.actionPoints[indexes.point]
+          : undefined;
+      } else {
+        const plan = items[indexes.plan];
+        point = plan && Array.isArray(plan.actionPoints)
+          ? plan.actionPoints[indexes.point]
+          : undefined;
+      }
+
+      backLink.href = planHref;
+
+      if (!point) {
+        caption.textContent = '';
+        heading.textContent = 'Action point not found';
+        summary.innerHTML = '';
+        editButton.hidden = true;
+        deleteButton.hidden = true;
+        if (actionButtons) {
+          actionButtons.hidden = true;
+          actionButtons.style.display = 'none';
+        }
+        if (statusTag) statusTag.hidden = true;
+        return;
+      }
+
+      if (isSentPlan) {
+        caption.textContent = 'Action plan ' + indexes.sentPlan;
+      } else {
+        caption.textContent = 'Action plan ' + (sentPlansCount + indexes.plan + 1);
+      }
+      heading.textContent = 'Action point ' + (indexes.point + 1);
+
+      summary.innerHTML =
+        summaryRow('Related to suspects', point.suspect || 'Not provided') +
+        summaryRow('Action', point.action || 'Not provided') +
+        summaryRow('Description of action', point.description || 'Not provided');
+
+      if (statusTag) {
+        if (isSentPlan) {
+          statusTag.textContent = 'Sent';
+          statusTag.className = 'govuk-tag govuk-tag--blue';
+        } else {
+          statusTag.textContent = 'Draft';
+          statusTag.className = 'govuk-tag govuk-tag--grey';
+        }
+      }
+
+      if (isSentPlan) {
+        editButton.hidden = true;
+        deleteButton.hidden = true;
+        if (actionButtons) {
+          actionButtons.hidden = true;
+          actionButtons.style.display = 'none';
+        }
+        return;
+      }
+
+      if (actionButtons) {
+        actionButtons.hidden = false;
+        actionButtons.style.display = '';
+      }
+
+      editButton.href = 'add-action-point-1.html#plan=' + indexes.plan + '&point=' + indexes.point;
+
+      // Delete this action point from its plan, then return to the plan.
+      deleteButton.addEventListener('click', function () {
+        const list = getActionPoints();
+        const targetPlan = list[indexes.plan];
+        if (targetPlan && Array.isArray(targetPlan.actionPoints)) {
+          targetPlan.actionPoints.splice(indexes.point, 1);
+          localStorage.setItem('actionPointData', JSON.stringify(list));
+        }
+        window.location.href = planHref;
+      });
+    }
+
+    render();
+  </script>
+{% endblock %}

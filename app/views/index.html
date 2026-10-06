@@ -1,0 +1,57 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Home" %}
+
+{% block content %}
+
+<style>
+  /* The shared layout (includes/wide.html) sets the page width to 1400px,
+     but the real CPS site this page is modelled on is 1200px wide. Since
+     that shared file affects every other page using this layout, the
+     narrower width is overridden here instead, scoped to this page only. */
+  .govuk-main-wrapper {
+    max-width: 1200px;
+    min-height: 100vh;
+  }
+
+  .govuk-width-container {
+    max-width: 1200px;
+  }
+</style>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    {% include "govuk-prototype-kit/includes/homepage-top.njk" %}
+
+    <h1 class="govuk-heading-xl">
+      {{ serviceName }}
+    </h1>
+
+
+    <p class="govuk-body">
+  <a href="prototype-index.html" class="govuk-link govuk-link--no-visited-state">Prototype index</a>
+</p>
+
+    <button type="button" class="govuk-button govuk-button--warning" data-module="govuk-button" id="clear-data-button">
+      Clear all saved data
+    </button>
+
+    <p class="govuk-body" id="clear-data-confirmation" role="status" hidden>
+      All saved prototype data has been cleared.
+    </p>
+
+    <script>
+      document.getElementById('clear-data-button').addEventListener('click', function () {
+        localStorage.clear();
+        sessionStorage.clear();
+        document.getElementById('clear-data-confirmation').hidden = false;
+      });
+    </script>
+  
+  </div>
+</div>
+
+
+
+{% endblock %}
