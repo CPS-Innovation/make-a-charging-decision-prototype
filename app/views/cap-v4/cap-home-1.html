@@ -359,11 +359,12 @@
 
         const actionPointsHtml = actionPoints.map(function (point, pointIndex) {
           const description = point && point.description ? point.description : 'Not provided';
+          const actionTitle = point && point.action ? point.action : 'Not provided';
           const descriptionHtml = descriptionWithShowMore(description, originalIndex + '-' + pointIndex);
 
           return '' +
             '<h4 class="govuk-heading-m">' +
-              '<a class="govuk-link govuk-link--no-visited-state" href="action-point-open.html#plan=' + originalIndex + '&point=' + pointIndex + '">Action point ' + (pointIndex + 1) + '</a>' +
+              '<a class="govuk-link govuk-link--no-visited-state" href="action-point-open.html#plan=' + originalIndex + '&point=' + pointIndex + '">' + (pointIndex + 1) + '. ' + actionTitle + '</a>' +
             '</h4>' +
             '<dl class="govuk-summary-list govuk-summary-list--no-border">' +
               '<div class="govuk-summary-list__row">' +
@@ -394,7 +395,7 @@
           actionPointsHtml +
           '<hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">' +
           '<div class="govuk-button-group">' +
-            '<a class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" href="add-action-point-to-plan.html#plan=' + originalIndex + '" role="button" draggable="false" data-module="govuk-button" onclick="sessionStorage.setItem(\'actionPlansStarted\', \'true\');">Add action point</a>' +
+            '<a class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" href="add-action-point-to-plan.html#plan=' + originalIndex + '" role="button" draggable="false" data-module="govuk-button" onclick="sessionStorage.setItem(\'actionPlansStarted\', \'true\');">Add another action</a>' +
           '</div>' +
           '<hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">' +
           '';
