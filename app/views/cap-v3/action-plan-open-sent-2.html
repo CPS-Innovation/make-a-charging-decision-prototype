@@ -1,0 +1,161 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  GOV.UK page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% set caseName = "COOPER, Sheldon and 4 Others" %}
+{% set caseReference = "45AA209820/1" %}
+
+{% block content %}
+  <style>
+    /* The shared layout sets the page width to 1400px, but the real CPS site
+       this page is modelled on is 1200px wide. Scoped to this page only. */
+    .govuk-main-wrapper {
+        max-width: 1200px;
+    }
+
+    .govuk-width-container {
+        max-width: 1200px;
+    }
+
+    /* Autosave status bar - specific to pages with an answer to save. */
+    .app-autosave-status {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        border-bottom: 1px solid #b1b4b6;
+        padding-bottom: 15px;
+        margin-bottom: 40px;
+    }
+
+    /* Row that sits the action point title link and its status tag side by
+       side, with a little space above each point's summary list. */
+    .app-action-point-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        margin-bottom: 15px;
+    }
+
+    .app-action-plan-title-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 15px;
+    }
+  </style>
+
+  <div class="app-autosave-status">
+    <div>
+      <p class="govuk-heading-s govuk-!-margin-bottom-0">{{ caseName }}</p>
+      <p class="govuk-body-s govuk-!-margin-bottom-0">{{ caseReference }}</p>
+    </div>
+    <p class="govuk-body-s govuk-!-margin-bottom-0"> <span class="js-autosave-time"></span></p>
+  </div>
+
+  <a href="cap-home-1.html" class="govuk-back-link">Back</a>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="app-action-plan-title-row">
+        <h1 class="govuk-heading-xl" id="action-plan-heading">Action plan</h1>
+        <strong class="govuk-tag govuk-tag--blue">Sent</strong>
+      </div>
+
+      <dl class="govuk-summary-list govuk-summary-list--no-border" id="action-plan-summary"></dl>
+
+
+ <h2 class="govuk-heading-l">Action points</h2>
+
+      <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+     
+
+      <div id="action-points"></div>
+    </div>
+  </div>
+
+  <script>
+    function formatGdsDate(value) {
+      if (!value) return 'Not provided';
+      const date = new Date(value + 'T12:00:00');
+      if (Number.isNaN(date.getTime())) return value;
+      return new Intl.DateTimeFormat('en-GB', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      }).format(date);
+    }
+
+    function summaryRow(key, value) {
+      return '<div class="govuk-summary-list__row">' +
+        '<dt class="govuk-summary-list__key">' + key + '</dt>' +
+        '<dd class="govuk-summary-list__value">' + value + '</dd>' +
+        '</div>';
+    }
+
+    const sampleSentPlan = {
+      dueDate: '2026-10-08',
+      chaserDate: '2026-10-22',
+      actionPoints: [
+        { suspect: 'Raj Koothrappali', action: 'Confirm bail variation details', description: 'Check whether any bail condition variations were approved and record the effective dates and authorising officer details.' },
+        { suspect: 'Leonard Hofstadter', action: 'Request CCTV continuity statement', description: 'Obtain continuity statement for all CCTV media and confirm each exhibit reference aligns to the current evidence index.' },
+        { suspect: 'Howard Wolowitz', action: 'Review call data schedule', description: 'Review call data schedule to identify unexplained communication gaps and prepare follow-up queries for digital investigations.' },
+        { suspect: 'Sheldon Cooper', action: 'Clarify forensic turnaround time', description: 'Contact forensic provider to confirm expected completion date and document any risk to upcoming review submission dates.' },
+        { suspect: 'All', action: 'Update special measures note', description: 'Reassess special measures requirements and update case note with rationale and supporting information from witness care unit.' },
+        { suspect: 'Raj Koothrappali', action: 'Check previous conviction bundle', description: 'Validate that conviction records are complete and suitable for use in charging advice and sentencing context if required.' },
+        { suspect: 'Leonard Hofstadter', action: 'Complete disclosure quality check', description: 'Perform quality check of redactions, exhibit labels, and disclosure descriptions before release to the defence team.' },
+        { suspect: 'Howard Wolowitz', action: 'Confirm hearing listing status', description: 'Verify hearing listing status with court team and capture date changes in the case timeline and task tracker.' },
+        { suspect: 'Sheldon Cooper', action: 'Follow up financial evidence', description: 'Follow up outstanding financial records request and note whether production order escalation is needed for non-compliance.' },
+        { suspect: 'All', action: 'Issue final case update', description: 'Send final case update to relevant authority summarising completed actions, remaining risks, and next review checkpoint.' }
+      ]
+    };
+
+    function render() {
+      const heading = document.getElementById('action-plan-heading');
+      const summary = document.getElementById('action-plan-summary');
+      const pointsTarget = document.getElementById('action-points');
+
+      heading.textContent = 'Action plan 2';
+
+      const editButton = document.getElementById('edit-action-plan-button');
+      if (editButton) editButton.hidden = true;
+
+      summary.innerHTML =
+        summaryRow('Sent by', 'S. Ahmed') +  
+        summaryRow('Date sent', '18 September 2026') +
+        summaryRow('Officer in charge', 'D. Thompson') +
+        summaryRow('Due date', formatGdsDate(sampleSentPlan.dueDate)) +
+        summaryRow('Chaser task date', formatGdsDate(sampleSentPlan.chaserDate));
+
+      const points = Array.isArray(sampleSentPlan.actionPoints) ? sampleSentPlan.actionPoints : [];
+
+      if (!points.length) {
+        pointsTarget.innerHTML = '';
+        return;
+      }
+
+      pointsTarget.innerHTML = points.map(function (point, i) {
+        const descriptionValue = point.description || 'Not provided';
+
+        return '' +
+          (i > 0 ? '<hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">' : '') +
+          '<div class="app-action-point-header">' +
+            '<h2 class="govuk-heading-m govuk-!-margin-bottom-0">' +
+              '<a class="govuk-link govuk-link--no-visited-state" href="action-point-open.html#sent-plan=2&point=' + i + '">Action point ' + (i + 1) + '</a>' +
+            '</h2>' +
+          '</div>' +
+          '<dl class="govuk-summary-list govuk-summary-list--no-border">' +
+            summaryRow('Related to suspects', point.suspect || 'Not provided') +
+            summaryRow('Action', point.action || 'Not provided') +
+            summaryRow('Description of action', descriptionValue) +
+          '</dl>';
+      }).join('') +
+        '<hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">';
+    }
+
+    render();
+  </script>
+{% endblock %}

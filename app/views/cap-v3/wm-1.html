@@ -1,0 +1,229 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  GOV.UK page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block content %}
+  <style>
+    .govuk-link:visited,
+    .govuk-tabs__tab:visited {
+      color: #1d70b8;
+    }
+  </style>
+
+  <div class="govuk-grid-row govuk-!-margin-bottom-3">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l govuk-!-margin-bottom-1">COOPER, Sheldon +2</h1>
+      <p class="govuk-body govuk-!-margin-bottom-0">45AA209820/1, Op: Operation Name</p>
+      <div id="waste-hint" class="govuk-hint govuk-!-margin-top-1">
+        Compass ID: 21415000 Unit: Unitname Area: Areaname
+      </div>
+    </div>
+
+    <div class="govuk-grid-column-one-third govuk-!-text-align-right">
+      <div class="govuk-!-margin-top-4 govuk-!-margin-bottom-2">
+        <button type="submit" class="govuk-button" data-module="govuk-button">
+          Add case alert
+        </button>
+      </div>
+
+      <p class="govuk-body govuk-!-margin-top-0 govuk-!-margin-bottom-0">
+        <a href="cap-home-1.html" class="govuk-link govuk-link--no-visited-state">Case action plans</a>
+      </p>
+    </div>
+  </div>
+
+  <div class="govuk-tabs" data-module="govuk-tabs">
+  <h2 class="govuk-tabs__title">
+    Contents
+  </h2>
+
+  <ul class="govuk-tabs__list">
+    <li class="govuk-tabs__list-item">
+      <a class="govuk-tabs__tab" href="#past-day">
+        Overview
+      </a>
+    </li>
+    <li class="govuk-tabs__list-item">
+      <a class="govuk-tabs__tab" href="#past-week">
+        Outline
+      </a>
+    </li>
+    <li class="govuk-tabs__list-item">
+      <a class="govuk-tabs__tab" href="#past-month">
+        Defendants
+      </a>
+    </li>
+    <li class="govuk-tabs__list-item">
+      <a class="govuk-tabs__tab" href="#past-year">
+        Witnesses
+      </a>
+    </li>
+    <li class="govuk-tabs__list-item">
+      <a class="govuk-tabs__tab" href="#contacts">
+        Contacts
+      </a>
+    </li>
+  </ul>
+
+  <div class="govuk-grid-row" style="margin-top: 40px;">
+    <div class="govuk-grid-column-one-half">
+      <div class="govuk-summary-card">
+        <div class="govuk-summary-card__title-wrapper">
+          <h2 class="govuk-summary-card__title">
+            Contacts
+          </h2>
+          <ul class="govuk-summary-card__actions">
+            <li class="govuk-summary-card__action">
+              <a class="govuk-link" href="#">Add/edit<span class="govuk-visually-hidden"> contacts</span></a>
+            </li>
+          </ul>
+        </div>
+        <div class="govuk-summary-card__content">
+          <dl class="govuk-summary-list govuk-summary-list--no-border">
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Felix Baumgartner
+              </dt>
+              <dd class="govuk-summary-list__value">
+                Officer in charge<br>felix.baumgartner@cps.gov.uk<br>+44 (0) 7123 456 789
+              </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Sarah Johnson
+              </dt>
+              <dd class="govuk-summary-list__value">
+                Prosecutor<br>sarah.johnson@cps.gov.uk<br>+44 (0) 7123 456 790
+              </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Michael Thompson
+              </dt>
+              <dd class="govuk-summary-list__value">
+                Case manager<br>michael.thompson@cps.gov.uk<br>+44 (0) 7123 456 791
+              </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Emma Williams
+              </dt>
+              <dd class="govuk-summary-list__value">
+                Legal advisor<br>emma.williams@cps.gov.uk<br>+44 (0) 7123 456 792
+              </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                James Brown
+              </dt>
+              <dd class="govuk-summary-list__value">
+                Investigator<br>james.brown@cps.gov.uk<br>+44 (0) 7123 456 793
+              </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Laura Davis
+              </dt>
+              <dd class="govuk-summary-list__value">
+                Victim liaison<br>laura.davis@cps.gov.uk<br>+44 (0) 7123 456 794
+              </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Robert Wilson
+              </dt>
+              <dd class="govuk-summary-list__value">
+                Witness officer<br>robert.wilson@cps.gov.uk<br>+44 (0) 7123 456 795
+              </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Natasha Khan
+              </dt>
+              <dd class="govuk-summary-list__value">
+                Administrative support<br>natasha.khan@cps.gov.uk<br>+44 (0) 7123 456 796
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+    <div class="govuk-grid-column-one-half">
+      <div class="govuk-summary-card">
+        <div class="govuk-summary-card__title-wrapper">
+          <h2 class="govuk-summary-card__title">
+            Tasks
+          </h2>
+          <ul class="govuk-summary-card__actions">
+            <li class="govuk-summary-card__action">
+              <a class="govuk-link" href="#">Task list<span class="govuk-visually-hidden"> (Tasks)</span></a>
+            </li>
+          </ul>
+        </div>
+        <div class="govuk-summary-card__content">
+          <table class="govuk-table govuk-table--small">
+            <thead class="govuk-table__head">
+              <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">Task</th>
+                <th scope="col" class="govuk-table__header">Due date</th>
+                <th scope="col" class="govuk-table__header">Role</th>
+              </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">Retrieve case details</td>
+                <td class="govuk-table__cell">24 Jan 2024</td>
+                <td class="govuk-table__cell">Prosecutor</td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">Request upgrade file</td>
+                <td class="govuk-table__cell">06 Feb 2024</td>
+                <td class="govuk-table__cell">Case manager</td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">Review witness statements</td>
+                <td class="govuk-table__cell">10 Feb 2024</td>
+                <td class="govuk-table__cell">Officer in charge</td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">Prepare bail brief</td>
+                <td class="govuk-table__cell">15 Feb 2024</td>
+                <td class="govuk-table__cell">Prosecutor</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="govuk-summary-card govuk-!-margin-top-4">
+        <div class="govuk-summary-card__title-wrapper">
+          <h2 class="govuk-summary-card__title">
+            Monitoring codes
+          </h2>
+          <ul class="govuk-summary-card__actions">
+            <li class="govuk-summary-card__action">
+              <a class="govuk-link" href="#">Add / Remove<span class="govuk-visually-hidden"> (Monitoring codes)</span></a>
+            </li>
+          </ul>
+        </div>
+        <div class="govuk-summary-card__content">
+          <h3 class="govuk-heading-s">Global codes</h3>
+          <ul class="govuk-list">
+            <li>Disability hate crime</li>
+            <li>Crime against an older person</li>
+            <li>Corona virus offences</li>
+          </ul>
+
+          <h3 class="govuk-heading-s govuk-!-margin-top-4">Local codes</h3>
+          <ul class="govuk-list">
+            <li>Proceeds of crime statistics</li>
+            <li>Murder</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
