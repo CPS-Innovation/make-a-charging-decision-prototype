@@ -262,7 +262,7 @@
     <div id="action-points">
 
       <div class="action-point">
-        <h2 class="govuk-heading-l app-action-point__heading">Action point 1</h2>
+        <h2 class="govuk-heading-l app-action-point__heading">Action 1</h2>
 
         <div class="govuk-form-group" id="suspect-1-form-group">
           <label class="govuk-heading-m" for="suspect-1">
@@ -334,7 +334,7 @@
     </div>
 
     <button type="button" id="add-another-action-point" class="govuk-button govuk-button--secondary" data-module="govuk-button">
-      Add another action point
+      Add another action
     </button>
 
          <div class="govuk-button-group">
@@ -389,7 +389,7 @@
         var number = index + 1;
 
         var heading = point.querySelector('.app-action-point__heading');
-        if (heading) heading.textContent = 'Action point ' + number;
+        if (heading) heading.textContent = 'Action ' + number;
 
         var removeGroup = point.querySelector('.app-action-point__remove');
         var removeButton = point.querySelector('.app-action-point__remove-button');

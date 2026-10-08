@@ -174,10 +174,11 @@
 
       if (isSentPlan) {
         caption.textContent = 'Action plan ' + indexes.sentPlan;
+        heading.textContent = 'Action point ' + (indexes.point + 1);
       } else {
         caption.textContent = 'Action plan ' + (sentPlansCount + indexes.plan + 1);
+        heading.textContent = (indexes.point + 1) + '. ' + (point.action || 'Not provided');
       }
-      heading.textContent = 'Action point ' + (indexes.point + 1);
 
       summary.innerHTML =
         summaryRow('Related to suspects', point.suspect || 'Not provided') +
