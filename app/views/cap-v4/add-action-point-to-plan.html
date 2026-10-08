@@ -1,0 +1,349 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  GOV.UK page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+{% set caseName = "COOPER, Sheldon and 4 Others" %}
+{% set caseReference = "45AA209820/1" %}
+{% block content %}
+
+  <style>
+    .govuk-main-wrapper {
+      max-width: 1200px;
+    }
+
+    .govuk-width-container {
+      max-width: 1200px;
+    }
+
+    .app-autosave-status {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-bottom: 1px solid #b1b4b6;
+      padding-bottom: 15px;
+      margin-bottom: 40px;
+    }
+
+    .govuk-select.govuk-\!-width-full {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      padding-right: 40px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='17' height='17' viewBox='0 0 17 17'%3E%3Cpath fill='none' stroke='%230b0c0c' stroke-width='2.5' d='M2 5l6.5 6.5L15 5'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+    }
+
+    .app-action-point__remove[hidden] {
+      display: none;
+    }
+  </style>
+
+  <div class="app-autosave-status">
+    <div>
+      <p class="govuk-heading-s govuk-!-margin-bottom-0">{{ caseName }}</p>
+      <p class="govuk-body-s govuk-!-margin-bottom-0">{{ caseReference }}</p>
+    </div>
+    <p class="govuk-body-s govuk-!-margin-bottom-0"> <span class="js-autosave-time"></span></p>
+  </div>
+
+  <a href="cap-home-1.html" class="govuk-back-link">Back</a>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <form id="action-point-form" novalidate>
+        <div id="error-summary-container"></div>
+
+        <span class="govuk-caption-l" id="action-plan-caption">Action plan</span>
+
+        <div id="action-points">
+          <div class="action-point">
+            <h2 class="govuk-heading-l app-action-point__heading">Action point 1</h2>
+
+            <div class="govuk-form-group" id="suspect-1-form-group">
+              <label class="govuk-heading-m" for="suspect-1">Related to suspects</label>
+              <span class="govuk-error-message" id="suspect-1-error" style="display:none"></span>
+              <select class="govuk-select govuk-!-width-full" id="suspect-1" name="suspect-1">
+                <option value="">Select a suspect</option>
+                <option value="All">All</option>
+                <option value="Howard Wolowitz">Howard Wolowitz</option>
+                <option value="Sheldon Cooper">Sheldon Cooper</option>
+                <option value="Leonard Hofstadter">Leonard Hofstadter</option>
+                <option value="Raj Koothrappali">Raj Koothrappali</option>
+              </select>
+            </div>
+
+            <div class="govuk-form-group" id="action-1-form-group">
+              <label class="govuk-heading-m" for="action-1">Action</label>
+              <span class="govuk-error-message" id="action-1-error" style="display:none"></span>
+              <select class="govuk-select govuk-!-width-full" id="action-1" name="action-1">
+                <option value="">Select an action</option>
+                <option value="Key witness details">Key witness details</option>
+                <option value="Key witness statements">Key witness statements</option>
+                <option value="Non-key witness statements">Non-key witness statements</option>
+                <option value="Additional non-key witness statements">Additional non-key witness statements</option>
+                <option value="Witness availability">Witness availability</option>
+                <option value="Victim Personal Statement (VPS)">Victim Personal Statement (VPS)</option>
+                <option value="Previous convictions for all prosecution witnesses">Previous convictions for all prosecution witnesses</option>
+                <option value="Special measures material">Special measures material</option>
+                <option value="Compensation details">Compensation details</option>
+                <option value="Key exhibits">Key exhibits</option>
+                <option value="Forensic evidence">Forensic evidence</option>
+                <option value="Identification evidence">Identification evidence</option>
+                <option value="Medical evidence">Medical evidence</option>
+                <option value="CCTV material">CCTV material</option>
+                <option value="Visually recorded evidence">Visually recorded evidence</option>
+                <option value="Initial drugs assessment">Initial drugs assessment</option>
+                <option value="Unused or sensitive material">Unused or sensitive material</option>
+                <option value="Record of taped interview (ROTI)">Record of taped interview (ROTI)</option>
+                <option value="Bad character/Dangerous offender information">Bad character/Dangerous offender information</option>
+                <option value="Orders on conviction">Orders on conviction</option>
+                <option value="Proceeds of Crime Act (POCA) review">Proceeds of Crime Act (POCA) review</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div class="govuk-form-group" id="description-1-form-group">
+              <label class="govuk-label govuk-label--m" for="description-1">Discription of action</label>
+              <span class="govuk-error-message" id="description-1-error" style="display:none"></span>
+              <textarea class="govuk-textarea" id="description-1" name="description-1" rows="5"></textarea>
+            </div>
+
+            <div class="govuk-button-group app-action-point__remove" hidden>
+              <button type="button" class="govuk-button govuk-button--secondary app-action-point__remove-button" data-module="govuk-button">
+                Remove action point 1
+              </button>
+            </div>
+
+            <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+          </div>
+        </div>
+
+        <button type="button" id="add-another-action-point" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+          Add another action point
+        </button>
+
+        <div class="govuk-button-group">
+          <button type="submit" class="govuk-button" data-module="govuk-button">Save and exit</button>
+          <a class="govuk-link" href="cap-home-1.html">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function getPlans() {
+      try {
+        const plans = JSON.parse(localStorage.getItem('actionPointData') || '[]');
+        return Array.isArray(plans) ? plans : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function getPlanIndex() {
+      const params = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+      return Number(params.get('plan'));
+    }
+
+    function getExistingPointsCount() {
+      const plans = getPlans();
+      const planIndex = getPlanIndex();
+      const plan = plans[planIndex] || {};
+      return Array.isArray(plan.actionPoints) ? plan.actionPoints.length : 0;
+    }
+
+    (function setHeading() {
+      const sentPlansCount = 2;
+      const caption = document.getElementById('action-plan-caption');
+      if (!caption) return;
+      const planIndex = getPlanIndex();
+      if (Number.isNaN(planIndex)) return;
+      caption.textContent = 'Action plan ' + (sentPlansCount + planIndex + 1);
+    })();
+
+    (function setupDynamicPoints() {
+      var container = document.getElementById('action-points');
+      var addButton = document.getElementById('add-another-action-point');
+      if (!container || !addButton) return;
+
+      var existingPointsCount = getExistingPointsCount();
+
+      function refresh() {
+        var points = container.querySelectorAll('.action-point');
+        var showRemove = points.length > 1;
+
+        points.forEach(function (point, index) {
+          var number = index + 1;
+          var displayNumber = existingPointsCount + number;
+
+          var heading = point.querySelector('.app-action-point__heading');
+          if (heading) heading.textContent = 'Action point ' + displayNumber;
+
+          var removeGroup = point.querySelector('.app-action-point__remove');
+          var removeButton = point.querySelector('.app-action-point__remove-button');
+          if (removeButton) removeButton.textContent = 'Remove action point ' + displayNumber;
+          if (removeGroup) removeGroup.hidden = !showRemove;
+
+          point.querySelectorAll('select, textarea, input').forEach(function (field) {
+            var newId = field.id.replace(/\d+$/, number);
+            var label = point.querySelector('label[for="' + field.id + '"]');
+            field.id = newId;
+            if (field.name) field.name = field.name.replace(/\d+$/, number);
+            if (label) label.setAttribute('for', newId);
+          });
+
+          var suspectGroup = point.querySelector('.govuk-form-group[id^="suspect-"][id$="-form-group"]');
+          var suspectError = point.querySelector('.govuk-error-message[id^="suspect-"][id$="-error"]');
+          if (suspectGroup) suspectGroup.id = 'suspect-' + number + '-form-group';
+          if (suspectError) suspectError.id = 'suspect-' + number + '-error';
+
+          var actionGroup = point.querySelector('.govuk-form-group[id^="action-"][id$="-form-group"]');
+          var actionError = point.querySelector('.govuk-error-message[id^="action-"][id$="-error"]');
+          if (actionGroup) actionGroup.id = 'action-' + number + '-form-group';
+          if (actionError) actionError.id = 'action-' + number + '-error';
+
+          var descriptionGroup = point.querySelector('.govuk-form-group[id^="description-"][id$="-form-group"]');
+          var descriptionError = point.querySelector('.govuk-error-message[id^="description-"][id$="-error"]');
+          if (descriptionGroup) descriptionGroup.id = 'description-' + number + '-form-group';
+          if (descriptionError) descriptionError.id = 'description-' + number + '-error';
+        });
+      }
+
+      addButton.addEventListener('click', function () {
+        var points = container.querySelectorAll('.action-point');
+        var newPoint = points[0].cloneNode(true);
+
+        newPoint.querySelectorAll('select, textarea, input').forEach(function (field) {
+          if (field.tagName === 'TEXTAREA') {
+            field.value = '';
+          } else if (field.tagName === 'SELECT') {
+            field.selectedIndex = 0;
+          }
+        });
+
+        newPoint.querySelectorAll('.govuk-form-group').forEach(function (group) {
+          group.classList.remove('govuk-form-group--error');
+        });
+        newPoint.querySelectorAll('.govuk-error-message').forEach(function (msg) {
+          msg.textContent = '';
+          msg.style.display = 'none';
+        });
+
+        container.appendChild(newPoint);
+        refresh();
+
+        var firstField = newPoint.querySelector('select, textarea, input');
+        if (firstField) firstField.focus();
+      });
+
+      container.addEventListener('click', function (event) {
+        var button = event.target.closest('.app-action-point__remove-button');
+        if (!button) return;
+        var point = button.closest('.action-point');
+        if (point) point.remove();
+        refresh();
+      });
+
+      refresh();
+    })();
+
+    document.getElementById('action-point-form').addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      document.getElementById('error-summary-container').innerHTML = '';
+      document.querySelectorAll('.govuk-form-group').forEach(function (group) {
+        group.classList.remove('govuk-form-group--error');
+      });
+      document.querySelectorAll('.govuk-error-message').forEach(function (msg) {
+        msg.style.display = 'none';
+        msg.textContent = '';
+      });
+
+      var errors = [];
+      var actionPointBlocks = document.querySelectorAll('#action-points .action-point');
+      var existingPointsCount = getExistingPointsCount();
+
+      actionPointBlocks.forEach(function (block, i) {
+        var suspect = block.querySelector('select[id^="suspect-"]');
+        var action = block.querySelector('select[id^="action-"]');
+        var description = block.querySelector('textarea[id^="description-"]');
+        var displayNumber = existingPointsCount + i + 1;
+
+        if (!suspect.value) {
+          errors.push({ field: suspect ? suspect.id : 'suspect-' + (i + 1), message: 'Select a suspect for action point ' + displayNumber });
+          var suspectGroup = suspect.closest('.govuk-form-group');
+          if (suspectGroup) suspectGroup.classList.add('govuk-form-group--error');
+          var suspectError = suspectGroup ? suspectGroup.querySelector('.govuk-error-message') : null;
+          if (suspectError) {
+            suspectError.textContent = 'Select a suspect';
+            suspectError.style.display = '';
+          }
+        }
+
+        if (!action.value) {
+          errors.push({ field: action ? action.id : 'action-' + (i + 1), message: 'Select an action for action point ' + displayNumber });
+          var actionGroup = action.closest('.govuk-form-group');
+          if (actionGroup) actionGroup.classList.add('govuk-form-group--error');
+          var actionError = actionGroup ? actionGroup.querySelector('.govuk-error-message') : null;
+          if (actionError) {
+            actionError.textContent = 'Select an action';
+            actionError.style.display = '';
+          }
+        }
+
+        if (!description.value.trim()) {
+          errors.push({ field: description ? description.id : 'description-' + (i + 1), message: 'Enter a description for action point ' + displayNumber });
+          var descriptionGroup = description.closest('.govuk-form-group');
+          if (descriptionGroup) descriptionGroup.classList.add('govuk-form-group--error');
+          var descriptionError = descriptionGroup ? descriptionGroup.querySelector('.govuk-error-message') : null;
+          if (descriptionError) {
+            descriptionError.textContent = 'Enter a description';
+            descriptionError.style.display = '';
+          }
+        }
+      });
+
+      if (errors.length > 0) {
+        var summaryHtml = '<div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">';
+        summaryHtml += '<h2 class="govuk-error-summary__title" id="error-summary-title">There is a problem</h2>';
+        summaryHtml += '<div class="govuk-error-summary__body"><ul class="govuk-list govuk-error-summary__list">';
+        errors.forEach(function (err) {
+          summaryHtml += '<li><a href="#' + err.field + '">' + err.message + '</a></li>';
+        });
+        summaryHtml += '</ul></div></div>';
+        document.getElementById('error-summary-container').innerHTML = summaryHtml;
+        var errorSummary = document.querySelector('.govuk-error-summary');
+        if (errorSummary) errorSummary.focus();
+        return;
+      }
+
+      var existing = getPlans();
+      var planIndex = getPlanIndex();
+      var plan = existing[planIndex];
+      if (!plan) {
+        window.location.href = 'cap-home-1.html';
+        return;
+      }
+
+      var newPoints = Array.from(document.querySelectorAll('#action-points .action-point')).map(function (point) {
+        var suspect = point.querySelector('select[id^="suspect-"]');
+        var action = point.querySelector('select[id^="action-"]');
+        var description = point.querySelector('textarea[id^="description-"]');
+        return {
+          suspect: suspect ? suspect.value : '',
+          action: action ? action.value : '',
+          description: description ? description.value : ''
+        };
+      });
+
+      var existingPoints = Array.isArray(plan.actionPoints) ? plan.actionPoints : [];
+      plan.actionPoints = existingPoints.concat(newPoints);
+      existing[planIndex] = plan;
+
+      localStorage.setItem('actionPointData', JSON.stringify(existing));
+      window.location.href = 'cap-home-1.html';
+    });
+  </script>
+{% endblock %}

@@ -1,0 +1,99 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  GOV.UK page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% set caseName = "COOPER, Sheldon and 4 Others" %}
+{% set caseReference = "45AA209820/1" %}
+
+{% block content %}
+  <style>
+    .govuk-main-wrapper {
+      max-width: 1200px;
+    }
+
+    .govuk-width-container {
+      max-width: 1200px;
+    }
+
+    .app-autosave-status {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-bottom: 1px solid #b1b4b6;
+      padding-bottom: 15px;
+      margin-bottom: 40px;
+    }
+  </style>
+
+  <div class="app-autosave-status">
+    <div>
+      <p class="govuk-heading-s govuk-!-margin-bottom-0">{{ caseName }}</p>
+      <p class="govuk-body-s govuk-!-margin-bottom-0">{{ caseReference }}</p>
+    </div>
+    <p class="govuk-body-s govuk-!-margin-bottom-0"> <span class="js-autosave-time"></span></p>
+  </div>
+
+  <a href="cap-home-1.html" class="govuk-back-link">Back</a>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl" id="delete-heading">Are you sure you want to delete action plan?</h1>
+
+      <p class="govuk-body govuk-!-margin-bottom-6">All action points that have been added to this plan will be lost.</p>
+
+      <div class="govuk-button-group">
+        <button id="confirm-delete" class="govuk-button govuk-button--warning" type="button" data-module="govuk-button">
+          Yes, delete
+        </button>
+        <a class="govuk-link" href="cap-home-1.html">No, cancel and go back</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function getPlans() {
+      try {
+        const data = JSON.parse(localStorage.getItem('actionPointData') || '[]');
+        return Array.isArray(data) ? data : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function getPlanIndex() {
+      const params = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+      return Number(params.get('plan'));
+    }
+
+    (function setup() {
+      const sentPlansCount = 2;
+      const heading = document.getElementById('delete-heading');
+      const deleteButton = document.getElementById('confirm-delete');
+      const planIndex = getPlanIndex();
+
+      if (Number.isNaN(planIndex)) {
+        window.location.href = 'cap-home-1.html';
+        return;
+      }
+
+      const actionPlanNumber = sentPlansCount + planIndex + 1;
+      if (heading) {
+        heading.textContent = 'Are you sure you want to delete action plan ' + actionPlanNumber + '?';
+      }
+
+      if (!deleteButton) return;
+
+      deleteButton.addEventListener('click', function () {
+        const plans = getPlans();
+        if (planIndex >= 0 && planIndex < plans.length) {
+          plans.splice(planIndex, 1);
+          localStorage.setItem('actionPointData', JSON.stringify(plans));
+        }
+        sessionStorage.setItem('actionPlansStarted', 'true');
+        window.location.href = 'cap-home-1.html';
+      });
+    })();
+  </script>
+{% endblock %}
