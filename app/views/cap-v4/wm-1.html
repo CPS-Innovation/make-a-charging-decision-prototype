@@ -329,6 +329,13 @@
         if (!iframe || !iframe.contentDocument) return;
 
         var doc = iframe.contentDocument;
+        if (doc.documentElement) {
+          doc.documentElement.style.overflowX = 'hidden';
+        }
+        if (doc.body) {
+          doc.body.style.overflowX = 'hidden';
+        }
+
         var selectors = [
           '.govuk-header',
           '.govuk-footer',
@@ -343,6 +350,12 @@
           doc.querySelectorAll(selector).forEach(function (element) {
             element.style.display = 'none';
           });
+        });
+
+        doc.querySelectorAll('.govuk-width-container, .govuk-main-wrapper').forEach(function (element) {
+          element.style.maxWidth = '100%';
+          element.style.width = '100%';
+          element.style.boxSizing = 'border-box';
         });
       }
 
