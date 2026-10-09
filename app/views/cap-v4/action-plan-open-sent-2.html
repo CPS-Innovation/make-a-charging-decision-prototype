@@ -67,7 +67,7 @@
       <dl class="govuk-summary-list govuk-summary-list--no-border" id="action-plan-summary"></dl>
 
 
- <h2 class="govuk-heading-l">Action points</h2>
+ <h2 class="govuk-heading-l">Actions</h2>
 
       <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
 
@@ -139,12 +139,13 @@
 
       pointsTarget.innerHTML = points.map(function (point, i) {
         const descriptionValue = point.description || 'Not provided';
+        const actionTitle = point.action || 'Not provided';
 
         return '' +
           (i > 0 ? '<hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">' : '') +
           '<div class="app-action-point-header">' +
             '<h2 class="govuk-heading-m govuk-!-margin-bottom-0">' +
-              '<a class="govuk-link govuk-link--no-visited-state" href="action-point-open.html#sent-plan=2&point=' + i + '">Action point ' + (i + 1) + '</a>' +
+              (i + 1) + '. ' + actionTitle +
             '</h2>' +
           '</div>' +
           '<dl class="govuk-summary-list govuk-summary-list--no-border">' +
